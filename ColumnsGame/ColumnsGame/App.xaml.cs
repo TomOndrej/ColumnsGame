@@ -1,28 +1,31 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using Prism.Ioc;
 
 namespace ColumnsGame
 {
-    public partial class App : Application
+    public partial class App
     {
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainPage();
         }
 
         protected override void OnStart()
-        {
-        }
+        { }
 
         protected override void OnSleep()
+        { }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterForNavigation<MainPage>();
+        }
+
+        protected override async void OnInitialized()
+        {
+            await this.NavigationService.NavigateAsync(nameof(MainPage));
         }
 
         protected override void OnResume()
-        {
-        }
+        { }
     }
 }
