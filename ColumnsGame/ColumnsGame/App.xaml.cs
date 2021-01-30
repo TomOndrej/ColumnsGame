@@ -1,4 +1,6 @@
-﻿using Prism.Ioc;
+﻿using ColumnsGame.Ioc;
+using Prism.Ioc;
+using Prism.Unity;
 
 namespace ColumnsGame
 {
@@ -27,5 +29,10 @@ namespace ColumnsGame
 
         protected override void OnResume()
         { }
+
+        protected override IContainerExtension CreateContainerExtension()
+        {
+            return new UnityContainerExtension(ContainerProvider.Container);
+        }
     }
 }
