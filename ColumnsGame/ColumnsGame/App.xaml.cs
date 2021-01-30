@@ -1,38 +1,12 @@
-﻿using ColumnsGame.Ioc;
-using Prism.Ioc;
-using Prism.Unity;
+﻿using Prism;
 
 namespace ColumnsGame
 {
     public partial class App
     {
-        public App()
+        public App(IPlatformInitializer platformInitializer) : base(platformInitializer)
         {
             InitializeComponent();
-        }
-
-        protected override void OnStart()
-        { }
-
-        protected override void OnSleep()
-        { }
-
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
-        {
-            containerRegistry.RegisterForNavigation<MainPage>();
-        }
-
-        protected override async void OnInitialized()
-        {
-            await this.NavigationService.NavigateAsync(nameof(MainPage));
-        }
-
-        protected override void OnResume()
-        { }
-
-        protected override IContainerExtension CreateContainerExtension()
-        {
-            return new UnityContainerExtension(ContainerProvider.Container);
         }
     }
 }

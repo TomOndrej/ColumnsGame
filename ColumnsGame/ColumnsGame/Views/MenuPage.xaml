@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ColumnsGame.Views.MenuPage"
+    xmlns:mvvm="http://prismlibrary.com"
+    mvvm:ViewModelLocator.AutowireViewModel="True">
+
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Welcome to Columns Game!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>
