@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColumnsGame.Android", "ColumnsGame\ColumnsGame.Android\ColumnsGame.Android.csproj", "{83E82436-F3EA-4A03-A102-2AE315B7D416}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColumnsGame", "ColumnsGame\ColumnsGame\ColumnsGame.csproj", "{80893BD6-88D0-4F85-9C2C-3E60282CE919}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83E82436-F3EA-4A03-A102-2AE315B7D416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83E82436-F3EA-4A03-A102-2AE315B7D416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83E82436-F3EA-4A03-A102-2AE315B7D416}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{83E82436-F3EA-4A03-A102-2AE315B7D416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83E82436-F3EA-4A03-A102-2AE315B7D416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83E82436-F3EA-4A03-A102-2AE315B7D416}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{80893BD6-88D0-4F85-9C2C-3E60282CE919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80893BD6-88D0-4F85-9C2C-3E60282CE919}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80893BD6-88D0-4F85-9C2C-3E60282CE919}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{80893BD6-88D0-4F85-9C2C-3E60282CE919}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80893BD6-88D0-4F85-9C2C-3E60282CE919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80893BD6-88D0-4F85-9C2C-3E60282CE919}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41C676F5-35E6-438A-8A65-B06C563A9058}
+	EndGlobalSection
+EndGlobal
