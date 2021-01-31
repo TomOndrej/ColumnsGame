@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ColumnsGame.Engine\ColumnsGame.Engine.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources\Texts.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
