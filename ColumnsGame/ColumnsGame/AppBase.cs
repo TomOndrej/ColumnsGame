@@ -20,7 +20,7 @@ namespace ColumnsGame
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterPagesForNavigation();
+            containerRegistry.RegisterNavigations(typeof(App).Assembly);
         }
 
         protected override async void OnInitialized()
@@ -34,6 +34,13 @@ namespace ColumnsGame
         protected override IContainerExtension CreateContainerExtension()
         {
             return new UnityContainerExtension(ContainerProvider.Container);
+        }
+
+        protected override void Initialize()
+        {
+            ContainerProvider.Container.RegisterDependencies(typeof(App).Assembly);
+
+            base.Initialize();
         }
     }
 }
