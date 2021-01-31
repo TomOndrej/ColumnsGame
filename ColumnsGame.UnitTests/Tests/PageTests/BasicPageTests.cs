@@ -45,7 +45,7 @@ namespace ColumnsGame.UnitTests.Tests.PageTests
         public async Task PageIsRegisteredForNavigation()
         {
             var navigationResult = await this.App.NavService.NavigateAsync($"/{typeof(TPage).Name}");
-            
+
             Assert.IsTrue(navigationResult.Success);
         } 
     }

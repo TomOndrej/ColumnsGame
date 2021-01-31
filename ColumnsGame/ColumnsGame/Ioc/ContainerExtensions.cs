@@ -9,6 +9,7 @@ namespace ColumnsGame.Ioc
         {
             containerRegistry.RegisterForNavigation<MainNavigationPage>();
             containerRegistry.RegisterForNavigation<MenuPage>();
+            containerRegistry.RegisterForNavigation<GamePage>();
         }
     }
 }

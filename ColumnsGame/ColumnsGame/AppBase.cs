@@ -25,7 +25,7 @@ namespace ColumnsGame
 
         protected override async void OnInitialized()
         {
-            await this.NavigationService.NavigateToAsync($"{nameof(MainNavigationPage)}/{nameof(MenuPage)}");
+            await this.NavigationService.NavigateToAsync($"/{nameof(MainNavigationPage)}/{nameof(MenuPage)}");
         }
 
         protected override void OnResume()

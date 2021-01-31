@@ -4,14 +4,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="ColumnsGame.Views.MenuPage"
     xmlns:mvvm="http://prismlibrary.com"
-    mvvm:ViewModelLocator.AutowireViewModel="True">
+    xmlns:resources="clr-namespace:ColumnsGame.Resources;assembly=ColumnsGame"
+    xmlns:viewModels="clr-namespace:ColumnsGame.ViewModels;assembly=ColumnsGame"
+    mvvm:ViewModelLocator.AutowireViewModel="True"
+    Title="{x:Static resources:Texts.AppName}"
+    x:DataType="viewModels:MenuPageViewModel">
 
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Columns Game!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+    <StackLayout
+        Padding="20">
+        
+        <Button
+            Text="{x:Static resources:Texts.NewGame}"
+            Command="{Binding StartGameCommand}"/>
+
+    </StackLayout>
 
 </ContentPage>

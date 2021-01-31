@@ -1,6 +1,4 @@
-﻿using ColumnsGame.Navigation;
-using ColumnsGame.Views;
-using Prism.Navigation;
+﻿using Prism.Navigation;
 
 namespace ColumnsGame.ViewModels
 {
