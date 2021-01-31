@@ -1,4 +1,8 @@
-﻿using ColumnsGame.Engine.GameSteps;
+﻿using ColumnsGame.Engine.Bricks;
+using ColumnsGame.Engine.Columns;
+using ColumnsGame.Engine.Drivers;
+using ColumnsGame.Engine.Field;
+using ColumnsGame.Engine.GameSteps;
 using Unity;
 
 namespace ColumnsGame.Engine.Ioc
@@ -20,6 +24,11 @@ namespace ColumnsGame.Engine.Ioc
 
             newContainer.RegisterType(typeof(INextStepProvider), typeof(NextStepProvider));
             newContainer.RegisterType(typeof(IGameStageSwitcher), typeof(GameStageSwitcher));
+            newContainer.RegisterType(typeof(IGameFieldFactory), typeof(GameFieldFactory));
+            newContainer.RegisterType(typeof(IBrickFactory), typeof(BrickFactory));
+            newContainer.RegisterType(typeof(IColumnFactory), typeof(ColumnFactory));
+
+            newContainer.RegisterSingleton(typeof(IColumnDriver), typeof(ColumnDriver));
 
             return newContainer;
         }

@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using ColumnsGame.Engine.Drivers;
+using ColumnsGame.Engine.Field;
 using ColumnsGame.Engine.GameSteps;
 using ColumnsGame.Engine.Interfaces;
 using ColumnsGame.Engine.Ioc;
@@ -30,10 +32,16 @@ namespace ColumnsGame.Engine
         private IGameStageSwitcher GameStageSwitcher =>
             this.gameStageSwitcher ??= ContainerProvider.Resolve<IGameStageSwitcher>();
 
+        private GameField gameField;
+
+        private GameField GameField =>
+            this.gameField ??= ContainerProvider.Resolve<IGameFieldFactory>().CreateEmptyField(this.Settings);
+
         public Game(IGameSettings gameSettings)
         {
             this.Settings = gameSettings;
             this.CancellationTokenSource = new CancellationTokenSource();
+            ContainerProvider.Resolve<IColumnDriver>().Initialize(this.Settings);
         }
 
         public void Start()
@@ -83,7 +91,7 @@ namespace ColumnsGame.Engine
 
         private Task ExecuteNextGameStep()
         {
-            var stepToExecute = this.NextStepProvider.GetNextGameStep(this.gameStage);
+            var stepToExecute = this.NextStepProvider.GetNextGameStep(this.gameStage, this.Settings);
             return stepToExecute.ExecuteStep();
         }
 
