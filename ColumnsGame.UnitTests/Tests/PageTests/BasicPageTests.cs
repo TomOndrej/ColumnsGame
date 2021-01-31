@@ -9,19 +9,10 @@ using Xamarin.Forms;
 
 namespace ColumnsGame.UnitTests.Tests.PageTests
 {
-    abstract class BasicPageTests<TPage, TPageViewModel>
+    abstract class BasicPageTests<TPage, TPageViewModel> : TestsWithInitializedApp
         where TPage : Page, new()
         where TPageViewModel : ViewModelBase
     {
-        private TestApp App { get; set; }
-
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            Xamarin.Forms.Mocks.MockForms.Init();
-            this.App = new TestApp(new TestPlatformInitializer());
-        }
-
         [Test]
         public void PageInstanceIsCreated()
         {
