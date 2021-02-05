@@ -1,8 +1,9 @@
-﻿using Prism.Navigation;
+﻿using Prism.Mvvm;
+using Prism.Navigation;
 
 namespace ColumnsGame.ViewModels
 {
-    public abstract class ViewModelBase : INavigatedAware
+    public abstract class ViewModelBase : BindableBase, INavigatedAware, IDestructible
     {
         protected INavigationService NavigationService { get; }
 
@@ -15,6 +16,9 @@ namespace ColumnsGame.ViewModels
         { }
 
         public virtual void OnNavigatedTo(INavigationParameters parameters)
+        { }
+
+        public virtual void Destroy()
         { }
     }
 }

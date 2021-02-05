@@ -1,12 +1,11 @@
 ﻿using ColumnsGame.Engine.Columns;
-using ColumnsGame.Engine.Interfaces;
 
 namespace ColumnsGame.Engine.Drivers
 {
-    internal interface IColumnDriver
+    internal interface IColumnDriver : IDriver<Column>
     {
-        void Initialize(IGameSettings settings);
+        bool IsColumnInFinalPosition { get; }
 
-        void DriveColumn(Column column);
+        void MoveColumnDown();
     }
 }

@@ -16,7 +16,7 @@ namespace ColumnsGame.Engine.Bricks
         private int GenerateRandomBrickKind(IGameSettings gameSettings)
         {
             Random rand = new Random();
-            return rand.Next(0, gameSettings.CountOfDifferentBrickKinds + 1);
+            return rand.Next(0, gameSettings.CountOfDifferentBrickKinds);
         }
     }
 }

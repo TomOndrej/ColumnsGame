@@ -1,4 +1,7 @@
 ﻿using System;
+using ColumnsGame.Engine.Constants;
+using ColumnsGame.Engine.Drivers;
+using ColumnsGame.Engine.Ioc;
 
 namespace ColumnsGame.Engine.GameSteps
 {
@@ -9,7 +12,9 @@ namespace ColumnsGame.Engine.GameSteps
             return currentGameStage switch
             {
                 GameStageEnum.CreateColumn => GameStageEnum.FallColumn,
-                GameStageEnum.FallColumn => GameStageEnum.FallColumn,
+                GameStageEnum.FallColumn => ContainerProvider.Resolve<IColumnDriver>().IsColumnInFinalPosition
+                    ? GameStageEnum.CreateColumn
+                    : GameStageEnum.FallColumn,
 
                 _ => throw new NotImplementedException(
                     $"{nameof(GameStageEnum)}.{currentGameStage:G} is not implemented.")

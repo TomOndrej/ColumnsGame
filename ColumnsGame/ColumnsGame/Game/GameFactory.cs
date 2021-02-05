@@ -8,7 +8,10 @@ namespace ColumnsGame.Game
     {
         public Engine.Game Create(IGameSettings gameSettings)
         {
-            return new Engine.Game(gameSettings);
+            var game = new Engine.Game();
+            game.Initialize(gameSettings);
+
+            return game;
         }
     }
 }

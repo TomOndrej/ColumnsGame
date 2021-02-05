@@ -1,4 +1,5 @@
-﻿using ColumnsGame.Engine.Interfaces;
+﻿using ColumnsGame.Engine.Constants;
+using ColumnsGame.Engine.Interfaces;
 
 namespace ColumnsGame.Engine.GameSteps
 {

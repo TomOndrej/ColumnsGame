@@ -2,8 +2,11 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using ColumnsGame.Engine.Constants;
 using ColumnsGame.Engine.Drivers;
+using ColumnsGame.Engine.EventArgs;
 using ColumnsGame.Engine.Field;
+using ColumnsGame.Engine.GameProvider;
 using ColumnsGame.Engine.GameSteps;
 using ColumnsGame.Engine.Interfaces;
 using ColumnsGame.Engine.Ioc;
@@ -12,36 +15,40 @@ namespace ColumnsGame.Engine
 {
     public class Game
     {
-        public bool IsRunning { get; private set; }
-
-        private IGameSettings Settings { get; }
-
-        private CancellationTokenSource CancellationTokenSource { get; }
-
-        private CancellationToken CancellationToken => this.CancellationTokenSource.Token;
+        private GameField gameField;
 
         private GameStageEnum gameStage;
 
+        private IGameStageSwitcher gameStageSwitcher;
+
         private INextStepProvider nextStepProvider;
+        public bool IsRunning { get; private set; }
+
+        private IGameSettings Settings { get; set; }
+
+        private CancellationTokenSource CancellationTokenSource { get; set; }
+
+        private CancellationToken CancellationToken => this.CancellationTokenSource.Token;
 
         private INextStepProvider NextStepProvider =>
             this.nextStepProvider ??= ContainerProvider.Resolve<INextStepProvider>();
 
-        private IGameStageSwitcher gameStageSwitcher;
-
         private IGameStageSwitcher GameStageSwitcher =>
             this.gameStageSwitcher ??= ContainerProvider.Resolve<IGameStageSwitcher>();
-
-        private GameField gameField;
 
         private GameField GameField =>
             this.gameField ??= ContainerProvider.Resolve<IGameFieldFactory>().CreateEmptyField(this.Settings);
 
-        public Game(IGameSettings gameSettings)
+        public event EventHandler<GameFieldChangedEventArgs> GameFieldChanged;
+
+        public void Initialize(IGameSettings gameSettings)
         {
             this.Settings = gameSettings;
             this.CancellationTokenSource = new CancellationTokenSource();
+
+            ContainerProvider.Resolve<IGameProvider>().SetGameInstance(this);
             ContainerProvider.Resolve<IColumnDriver>().Initialize(this.Settings);
+            ContainerProvider.Resolve<IFieldDriver>().Initialize(this.Settings);
         }
 
         public void Start()
@@ -51,6 +58,11 @@ namespace ColumnsGame.Engine
 #pragma warning restore 4014
         }
 
+        internal void RaiseGameFieldChanged(GameFieldChangedEventArgs gameFieldChangedEventArgs)
+        {
+            this.GameFieldChanged?.Invoke(this, gameFieldChangedEventArgs);
+        }
+
         public void Stop()
         {
             this.CancellationTokenSource?.Cancel();
@@ -58,8 +70,7 @@ namespace ColumnsGame.Engine
 
         private async Task Run()
         {
-            this.IsRunning = true;
-            this.gameStage = GameStageEnum.CreateColumn;
+            InitializeRun();
 
             try
             {
@@ -72,7 +83,6 @@ namespace ColumnsGame.Engine
 
                         await Task.Delay(this.Settings.GameSpeed, this.CancellationToken).ConfigureAwait(false);
                     }
-
                 }, this.CancellationTokenSource.Token).ConfigureAwait(false);
             }
             catch (TaskCanceledException)
@@ -85,8 +95,20 @@ namespace ColumnsGame.Engine
             }
             finally
             {
-                this.IsRunning = false;
+                FinalizeRun();
             }
+        }
+
+        private void InitializeRun()
+        {
+            this.IsRunning = true;
+            this.gameStage = GameStageEnum.CreateColumn;
+            ContainerProvider.Resolve<IFieldDriver>().Drive(this.GameField);
+        }
+
+        private void FinalizeRun()
+        {
+            this.IsRunning = false;
         }
 
         private Task ExecuteNextGameStep()

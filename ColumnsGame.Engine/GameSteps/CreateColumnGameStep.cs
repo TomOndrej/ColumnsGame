@@ -14,7 +14,7 @@ namespace ColumnsGame.Engine.GameSteps
         protected override Task ProcessStep()
         {
             var newColumn = ContainerProvider.Resolve<IColumnFactory>().CreateColumn(this.GameSettings);
-            ContainerProvider.Resolve<IColumnDriver>().DriveColumn(newColumn);
+            ContainerProvider.Resolve<IColumnDriver>().Drive(newColumn);
 
             return Task.CompletedTask;
         } 

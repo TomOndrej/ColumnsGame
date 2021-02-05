@@ -1,4 +1,4 @@
-﻿namespace ColumnsGame.Engine
+﻿namespace ColumnsGame.Engine.Constants
 {
     internal enum GameStageEnum
     {

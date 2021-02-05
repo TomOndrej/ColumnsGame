@@ -2,6 +2,7 @@
 using ColumnsGame.Engine.Columns;
 using ColumnsGame.Engine.Drivers;
 using ColumnsGame.Engine.Field;
+using ColumnsGame.Engine.GameProvider;
 using ColumnsGame.Engine.GameSteps;
 using Unity;
 
@@ -29,6 +30,8 @@ namespace ColumnsGame.Engine.Ioc
             newContainer.RegisterType(typeof(IColumnFactory), typeof(ColumnFactory));
 
             newContainer.RegisterSingleton(typeof(IColumnDriver), typeof(ColumnDriver));
+            newContainer.RegisterSingleton(typeof(IFieldDriver), typeof(FieldDriver));
+            newContainer.RegisterSingleton(typeof(IGameProvider), typeof(GameProvider.GameProvider));
 
             return newContainer;
         }

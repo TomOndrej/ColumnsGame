@@ -1,38 +1,62 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ColumnsGame.Engine.Bricks;
 using ColumnsGame.Engine.Columns;
-using ColumnsGame.Engine.Interfaces;
+using ColumnsGame.Engine.Ioc;
+using ColumnsGame.Engine.Positions;
 
 namespace ColumnsGame.Engine.Drivers
 {
-    internal class ColumnDriver : IColumnDriver
+    internal class ColumnDriver : DriverBase<Column>, IColumnDriver
     {
-        private IGameSettings Settings { get; set; }
+        private readonly Dictionary<IBrick, BrickPosition> bricksPositions = new Dictionary<IBrick, BrickPosition>();
+        public bool IsColumnInFinalPosition { get; private set; }
 
-        private readonly Dictionary<IBrick, BrickPosition> brickPositions = new Dictionary<IBrick, BrickPosition>();
-
-        private Column DrivenColumn { get; set; }
-
-        public void Initialize(IGameSettings settings)
+        public override void Drive(Column entityToDrive)
         {
-            this.Settings = settings;
-        }
+            base.Drive(entityToDrive);
 
-        public void DriveColumn(Column column)
-        {
-            this.DrivenColumn = column;
+            this.IsColumnInFinalPosition = false;
 
-            this.brickPositions.Clear();
+            this.bricksPositions.Clear();
 
-            for (int i = 0; i < this.DrivenColumn.Count; i++)
+            for (var i = 0; i < this.DrivenEntity.Count; i++)
             {
-                this.brickPositions.Add(
-                    this.DrivenColumn[i], 
+                this.bricksPositions.Add(
+                    this.DrivenEntity[i],
                     new BrickPosition
                     {
-                        Xcoordinate = GetXCoordinateOfNewlyDrivenColumn(),
-                        Ycoordinate = GetYCoorditeOfNewlyDrivenColumn(i)
+                        XCoordinate = GetXCoordinateOfNewlyDrivenColumn(),
+                        YCoordinate = GetYCoordinateOfNewlyDrivenColumn(i)
                     });
+            }
+        }
+
+        public void MoveColumnDown()
+        {
+            if (this.IsColumnInFinalPosition)
+            {
+                return;
+            }
+
+            var requestedBrickPositions = this.bricksPositions.Select(brick =>
+                new KeyValuePair<IBrick, BrickPosition>(brick.Key, brick.Value.IncrementYCoordinate())).ToList();
+
+            var brickPositionsToFieldPush = requestedBrickPositions.Where(pair => pair.Value.YCoordinate >= 0)
+                .OrderByDescending(pair => pair.Value.YCoordinate).ToList();
+
+            var moveResult = ContainerProvider.Resolve<IFieldDriver>().TryMoveBricksDown(brickPositionsToFieldPush);
+
+            if (moveResult.Success)
+            {
+                this.bricksPositions.Clear();
+
+                requestedBrickPositions.ForEach(requestedBrickPosition =>
+                    this.bricksPositions.Add(requestedBrickPosition.Key, requestedBrickPosition.Value));
+            }
+            else
+            {
+                this.IsColumnInFinalPosition = true;
             }
         }
 
@@ -41,9 +65,9 @@ namespace ColumnsGame.Engine.Drivers
             return this.Settings.FieldWidth / 2;
         }
 
-        private int GetYCoorditeOfNewlyDrivenColumn(int brickIndex)
+        private int GetYCoordinateOfNewlyDrivenColumn(int brickIndex)
         {
-            return -(this.DrivenColumn.Count - brickIndex);
+            return -(this.DrivenEntity.Count - brickIndex);
         }
     }
 }

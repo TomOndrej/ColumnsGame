@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using ColumnsGame.Engine.Bricks;
+using ColumnsGame.Engine.Drivers;
+using ColumnsGame.Engine.Positions;
 
 namespace ColumnsGame.Engine.Field
 {
-    internal class GameField : Dictionary<BrickPosition, IBrick>
+    internal class GameField : Dictionary<BrickPosition, IBrick>, IDrivable
     {
-        private int Width { get; }
+        internal int Width { get; }
 
-        private int Height { get; }
+        internal int Height { get; }
 
         internal GameField(int width, int height)
         {

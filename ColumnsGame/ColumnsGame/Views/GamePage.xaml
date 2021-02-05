@@ -6,11 +6,8 @@
     x:Class="ColumnsGame.Views.GamePage"
     mvvm:ViewModelLocator.AutowireViewModel="True">
 
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Game page"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+    <Grid
+        ColumnSpacing="2"
+        RowSpacing="2"
+        x:Name="GameFieldGrid"/>
 </ContentPage>
