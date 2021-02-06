@@ -129,4 +129,7 @@
   <data name="Right" xml:space="preserve">
     <value>Right</value>
   </data>
+  <data name="Rotate" xml:space="preserve">
+    <value>Rotate</value>
+  </data>
 </root>

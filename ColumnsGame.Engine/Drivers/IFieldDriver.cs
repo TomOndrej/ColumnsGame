@@ -8,5 +8,7 @@ namespace ColumnsGame.Engine.Drivers
     internal interface IFieldDriver : IDriver<GameField>
     {
         MoveResult TryMoveBricks(List<KeyValuePair<IBrick, BrickPosition>> bricks);
+
+        void ChangeKindOfBricks();
     }
 }

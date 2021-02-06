@@ -30,6 +30,13 @@
             CommandParameter="{x:Static constants:PlayerRequestEnum.Left}"/>
 
         <Button
+            Grid.Column="1"
+            Grid.Row="1"
+            Text="{x:Static resources:Texts.Rotate}"
+            Command="{Binding MoveColumnCommand}"
+            CommandParameter="{x:Static constants:PlayerRequestEnum.Rotate}"/>
+
+        <Button
             Grid.Column="3"
             Grid.Row="1"
             Text="{x:Static resources:Texts.Right}"

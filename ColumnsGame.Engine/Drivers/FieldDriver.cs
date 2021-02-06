@@ -35,14 +35,24 @@ namespace ColumnsGame.Engine.Drivers
                 SetBrickToNewPosition(brick);
             }
 
+            CreateAndNotifyNewGameFieldData();
+
+            return new MoveResult(true);
+        }
+
+        public void ChangeKindOfBricks()
+        {
+            CreateAndNotifyNewGameFieldData();
+        }
+
+        private void CreateAndNotifyNewGameFieldData()
+        {
             var newGameFieldData = CreateEmptyGameFieldData();
 
             FillGameFieldData(newGameFieldData);
 
             ContainerProvider.Resolve<IGameProvider>().GetGameInstance()
                 ?.RaiseGameFieldChanged(new GameFieldChangedEventArgs(newGameFieldData));
-
-            return new MoveResult(true);
         }
 
         private int[,] CreateEmptyGameFieldData()

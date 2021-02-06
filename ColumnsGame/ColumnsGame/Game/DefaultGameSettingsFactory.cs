@@ -12,7 +12,7 @@ namespace ColumnsGame.Game
         {
             return new GameSettings
             {
-                GameSpeed = TimeSpan.FromMilliseconds(100),
+                GameSpeed = TimeSpan.FromMilliseconds(200),
                 FieldWidth = 6,
                 FieldHeight = 13,
                 CountOfDifferentBrickKinds = 4,

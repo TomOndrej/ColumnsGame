@@ -20,11 +20,15 @@ namespace ColumnsGame.Engine.Drivers
         private ConcurrentQueue<PlayerRequestEnum> PlayerRequests =>
             this.playerRequests ??= new ConcurrentQueue<PlayerRequestEnum>();
 
+        private bool IsColumnRotatable { get; set; }
+
         public bool IsColumnInFinalPosition { get; private set; }
 
         public override void Drive(Column entityToDrive)
         {
             base.Drive(entityToDrive);
+
+            this.IsColumnRotatable = this.DrivenEntity.First().BrickKind != this.DrivenEntity.Last().BrickKind;
 
             this.bricksPositions.Clear();
 
@@ -38,6 +42,7 @@ namespace ColumnsGame.Engine.Drivers
                         YCoordinate = GetYCoordinateOfNewlyDrivenColumn(i)
                     });
             }
+
 
             this.IsColumnInFinalPosition = false;
 
@@ -103,6 +108,30 @@ namespace ColumnsGame.Engine.Drivers
             return true;
         }
 
+        private void RotateColumn()
+        {
+            if (!this.IsColumnRotatable)
+            {
+                return;
+            }
+
+            if (this.IsColumnInFinalPosition)
+            {
+                return;
+            }
+
+            var firstBrick = this.DrivenEntity.First();
+            var lastBrick = this.DrivenEntity.Last();
+
+            var kindOfFirstBrick = firstBrick.BrickKind;
+            var kindOfLastBrick = lastBrick.BrickKind;
+
+            firstBrick.BrickKind = kindOfLastBrick;
+            lastBrick.BrickKind = kindOfFirstBrick;
+
+            ContainerProvider.Resolve<IFieldDriver>().ChangeKindOfBricks();
+        }
+
         private void StartListenForPlayerRequests()
         {
             this.PlayerRequests.Clear();
@@ -139,6 +168,9 @@ namespace ColumnsGame.Engine.Drivers
                     break;
                 case PlayerRequestEnum.Right:
                     MoveColumnRight();
+                    break;
+                case PlayerRequestEnum.Rotate:
+                    RotateColumn();
                     break;
 
                 default:

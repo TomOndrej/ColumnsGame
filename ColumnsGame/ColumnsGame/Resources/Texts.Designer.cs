@@ -95,5 +95,14 @@ namespace ColumnsGame.Resources {
                 return ResourceManager.GetString("Right", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rotate.
+        /// </summary>
+        internal static string Rotate {
+            get {
+                return ResourceManager.GetString("Rotate", resourceCulture);
+            }
+        }
     }
 }

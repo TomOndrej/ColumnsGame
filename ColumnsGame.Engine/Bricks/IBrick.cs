@@ -2,6 +2,6 @@
 {
     internal interface IBrick
     {
-        int BrickKind { get; }
+        int BrickKind { get; set; }
     }
 }
