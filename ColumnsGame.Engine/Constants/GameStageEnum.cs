@@ -4,6 +4,7 @@
     {
         Empty = 0,
         CreateColumn = 1,
-        FallColumn = 2
+        FallColumn = 2,
+        CleanField = 3
     }
 }

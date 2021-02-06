@@ -4,6 +4,7 @@ using ColumnsGame.Engine.Drivers;
 using ColumnsGame.Engine.Field;
 using ColumnsGame.Engine.GameProvider;
 using ColumnsGame.Engine.GameSteps;
+using ColumnsGame.Engine.RemovablePatterns;
 using Unity;
 
 namespace ColumnsGame.Engine.Ioc
@@ -28,6 +29,7 @@ namespace ColumnsGame.Engine.Ioc
             newContainer.RegisterType(typeof(IGameFieldFactory), typeof(GameFieldFactory));
             newContainer.RegisterType(typeof(IBrickFactory), typeof(BrickFactory));
             newContainer.RegisterType(typeof(IColumnFactory), typeof(ColumnFactory));
+            newContainer.RegisterType(typeof(IRemovablePatternsProvider), typeof(RemovablePatternsProvider));
 
             newContainer.RegisterSingleton(typeof(IColumnDriver), typeof(ColumnDriver));
             newContainer.RegisterSingleton(typeof(IFieldDriver), typeof(FieldDriver));

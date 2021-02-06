@@ -1,6 +1,6 @@
 ﻿namespace ColumnsGame.Engine.Positions
 {
-    public struct BrickPosition
+    internal struct BrickPosition
     {
         public int XCoordinate;
 
@@ -12,6 +12,15 @@
             {
                 XCoordinate = this.XCoordinate,
                 YCoordinate = this.YCoordinate + 1
+            };
+        }
+
+        internal BrickPosition DecrementYCoordinate()
+        {
+            return new BrickPosition
+            {
+                XCoordinate = this.XCoordinate,
+                YCoordinate = this.YCoordinate - 1
             };
         }
 

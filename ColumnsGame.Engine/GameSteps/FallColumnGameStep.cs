@@ -8,13 +8,14 @@ namespace ColumnsGame.Engine.GameSteps
     internal class FallColumnGameStep : GameStepBase
     {
         public FallColumnGameStep(IGameSettings gameSettings) : base(gameSettings)
-        { }
+        {
+        }
 
-        protected override Task ProcessStep()
+        protected override async Task ProcessStep()
         {
             ContainerProvider.Resolve<IColumnDriver>().MoveColumnDown();
 
-            return Task.CompletedTask;
+            await Task.Delay(this.GameSettings.GameSpeed).ConfigureAwait(false);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace ColumnsGame.Engine.GameSteps
                 GameStageEnum.Empty => new EmptyGameStep(gameSettings),
                 GameStageEnum.CreateColumn => new CreateColumnGameStep(gameSettings),
                 GameStageEnum.FallColumn => new FallColumnGameStep(gameSettings),
+                GameStageEnum.CleanField => new CleanFieldGameStep(gameSettings),
 
                 _ => throw new NotImplementedException($"{nameof(GameStageEnum)}.{gameStage:G} is not implemented.")
             };

@@ -80,8 +80,6 @@ namespace ColumnsGame.Engine
                     {
                         await ExecuteNextGameStep().ConfigureAwait(false);
                         this.gameStage = this.GameStageSwitcher.SwitchStage(this.gameStage);
-
-                        await Task.Delay(this.Settings.GameSpeed, this.CancellationToken).ConfigureAwait(false);
                     }
                 }, this.CancellationTokenSource.Token).ConfigureAwait(false);
             }

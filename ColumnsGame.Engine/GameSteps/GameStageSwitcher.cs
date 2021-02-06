@@ -12,9 +12,11 @@ namespace ColumnsGame.Engine.GameSteps
             return currentGameStage switch
             {
                 GameStageEnum.CreateColumn => GameStageEnum.FallColumn,
-                GameStageEnum.FallColumn => ContainerProvider.Resolve<IColumnDriver>().IsColumnInFinalPosition
-                    ? GameStageEnum.CreateColumn
-                    : GameStageEnum.FallColumn,
+                GameStageEnum.FallColumn =>
+                    ContainerProvider.Resolve<IColumnDriver>().IsColumnInFinalPosition
+                        ? GameStageEnum.CleanField
+                        : GameStageEnum.FallColumn,
+                GameStageEnum.CleanField => GameStageEnum.CreateColumn,
 
                 _ => throw new NotImplementedException(
                     $"{nameof(GameStageEnum)}.{currentGameStage:G} is not implemented.")
