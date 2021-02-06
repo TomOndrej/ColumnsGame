@@ -2,9 +2,9 @@
 {
     internal enum GameStageEnum
     {
-        Empty = 0,
-        CreateColumn = 1,
-        FallColumn = 2,
-        CleanField = 3
+        CreateColumn = 0,
+        FallColumn = 1,
+        CleanField = 2,
+        CheckGameOver = 3
     }
 }

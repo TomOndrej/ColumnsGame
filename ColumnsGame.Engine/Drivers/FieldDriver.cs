@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ColumnsGame.Engine.Bricks;
@@ -83,6 +84,16 @@ namespace ColumnsGame.Engine.Drivers
                 CreateAndNotifyNewGameFieldData();
 
                 await Task.Delay(500).ConfigureAwait(false);
+            }
+        }
+
+        public void StopGameIfGameIsOver()
+        {
+            if (this.DrivenEntity.Any(pair => pair.Key.YCoordinate == 0))
+            {
+                Debug.WriteLine("Game over.");
+
+                ContainerProvider.Resolve<IGameProvider>().GetGameInstance()?.GameOver();
             }
         }
 

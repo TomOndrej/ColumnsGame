@@ -16,7 +16,8 @@ namespace ColumnsGame.Engine.GameSteps
                     ContainerProvider.Resolve<IColumnDriver>().IsColumnInFinalPosition
                         ? GameStageEnum.CleanField
                         : GameStageEnum.FallColumn,
-                GameStageEnum.CleanField => GameStageEnum.CreateColumn,
+                GameStageEnum.CleanField => GameStageEnum.CheckGameOver,
+                GameStageEnum.CheckGameOver => GameStageEnum.CreateColumn,
 
                 _ => throw new NotImplementedException(
                     $"{nameof(GameStageEnum)}.{currentGameStage:G} is not implemented.")

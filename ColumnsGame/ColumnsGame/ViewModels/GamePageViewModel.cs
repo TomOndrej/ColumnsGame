@@ -1,7 +1,9 @@
-﻿using ColumnsGame.Engine.Constants;
+﻿using System.ComponentModel;
+using ColumnsGame.Engine.Constants;
 using ColumnsGame.Engine.EventArgs;
 using ColumnsGame.Game;
 using ColumnsGame.Ioc;
+using ColumnsGame.Resources;
 using Prism.Commands;
 using Prism.Navigation;
 
@@ -9,6 +11,7 @@ namespace ColumnsGame.ViewModels
 {
     public class GamePageViewModel : ViewModelBase
     {
+        private Engine.Game game;
         private int[,] gameFieldMatrix;
 
         private DelegateCommand<PlayerRequestEnum?> moveColumnCommand;
@@ -17,7 +20,23 @@ namespace ColumnsGame.ViewModels
         {
         }
 
-        private Engine.Game Game { get; set; }
+        public Engine.Game Game
+        {
+            get => this.game;
+            private set
+            {
+                this.game = value;
+                RaisePropertyChanged(nameof(this.Game));
+
+                if (this.game != null)
+                {
+                    this.game.GameFieldChanged += OnGameFieldChanged;
+                    this.game.PropertyChanged += OnGamePropertyChanged;
+                }
+            }
+        }
+
+        public string OverlayText => this.Game?.IsGameOver == true ? Texts.GameOver : string.Empty;
 
         public int[,] GameFieldMatrix
         {
@@ -53,7 +72,6 @@ namespace ColumnsGame.ViewModels
 
             var gameSettings = ContainerProvider.Resolve<IDefaultGameSettingsFactory>().Create();
             this.Game = ContainerProvider.Resolve<IGameFactory>().Create(gameSettings);
-            this.Game.GameFieldChanged += OnGameFieldChanged;
 
             this.Game.Start();
         }
@@ -75,12 +93,21 @@ namespace ColumnsGame.ViewModels
             if (this.Game != null)
             {
                 this.Game.GameFieldChanged -= OnGameFieldChanged;
+                this.Game.PropertyChanged -= OnGamePropertyChanged;
             }
         }
 
         private void OnGameFieldChanged(object sender, GameFieldChangedEventArgs e)
         {
             this.GameFieldMatrix = e.NewGameFieldData;
+        }
+
+        private void OnGamePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Engine.Game.IsGameOver))
+            {
+                RaisePropertyChanged(nameof(this.OverlayText));
+            }
         }
     }
 }

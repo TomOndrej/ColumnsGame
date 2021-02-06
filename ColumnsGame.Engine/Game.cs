@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ using ColumnsGame.Engine.Ioc;
 
 namespace ColumnsGame.Engine
 {
-    public class Game
+    public class Game : INotifyPropertyChanged
     {
         private GameField gameField;
 
@@ -21,8 +22,26 @@ namespace ColumnsGame.Engine
 
         private IGameStageSwitcher gameStageSwitcher;
 
+        private bool isGameOver;
+
         private INextStepProvider nextStepProvider;
+
         public bool IsRunning { get; private set; }
+
+        public bool IsGameOver
+        {
+            get => this.isGameOver;
+            private set
+            {
+                if (this.isGameOver == value)
+                {
+                    return;
+                }
+
+                this.isGameOver = value;
+                OnPropertyChanged(nameof(this.IsGameOver));
+            }
+        }
 
         private IGameSettings Settings { get; set; }
 
@@ -39,6 +58,8 @@ namespace ColumnsGame.Engine
         private GameField GameField =>
             this.gameField ??= ContainerProvider.Resolve<IGameFieldFactory>().CreateEmptyField(this.Settings);
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public event EventHandler<GameFieldChangedEventArgs> GameFieldChanged;
 
         public void Initialize(IGameSettings gameSettings)
@@ -53,6 +74,16 @@ namespace ColumnsGame.Engine
 
         public void Start()
         {
+            if (this.IsRunning)
+            {
+                throw new InvalidOperationException("Game is already running.");
+            }
+
+            if (this.IsGameOver)
+            {
+                throw new InvalidOperationException("Game is over.");
+            }
+
 #pragma warning disable 4014
             Run();
 #pragma warning restore 4014
@@ -63,8 +94,15 @@ namespace ColumnsGame.Engine
             this.GameFieldChanged?.Invoke(this, gameFieldChangedEventArgs);
         }
 
+        internal void GameOver()
+        {
+            this.IsGameOver = true;
+            Stop();
+        }
+
         public void Stop()
         {
+            this.IsRunning = false;
             this.CancellationTokenSource?.Cancel();
         }
 
@@ -129,6 +167,11 @@ namespace ColumnsGame.Engine
         {
             Debug.WriteLine(e);
             //TODO: implement settable exception handler
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

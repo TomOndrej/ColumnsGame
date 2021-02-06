@@ -13,5 +13,7 @@ namespace ColumnsGame.Engine.Drivers
         void ChangeKindOfBricks();
 
         Task RemoveBrickPatterns();
+
+        void StopGameIfGameIsOver();
     }
 }

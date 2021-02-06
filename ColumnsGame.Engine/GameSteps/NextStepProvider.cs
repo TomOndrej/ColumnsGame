@@ -10,10 +10,10 @@ namespace ColumnsGame.Engine.GameSteps
         {
             return gameStage switch
             {
-                GameStageEnum.Empty => new EmptyGameStep(gameSettings),
                 GameStageEnum.CreateColumn => new CreateColumnGameStep(gameSettings),
                 GameStageEnum.FallColumn => new FallColumnGameStep(gameSettings),
                 GameStageEnum.CleanField => new CleanFieldGameStep(gameSettings),
+                GameStageEnum.CheckGameOver => new CheckGameOverGameStep(gameSettings),
 
                 _ => throw new NotImplementedException($"{nameof(GameStageEnum)}.{gameStage:G} is not implemented.")
             };

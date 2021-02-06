@@ -120,6 +120,9 @@
   <data name="AppName" xml:space="preserve">
     <value>Columns Game</value>
   </data>
+  <data name="GameOver" xml:space="preserve">
+    <value>Game Over</value>
+  </data>
   <data name="Left" xml:space="preserve">
     <value>Left</value>
   </data>

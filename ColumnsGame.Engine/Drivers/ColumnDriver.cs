@@ -43,7 +43,6 @@ namespace ColumnsGame.Engine.Drivers
                     });
             }
 
-
             this.IsColumnInFinalPosition = false;
 
             StartListenForPlayerRequests();
@@ -51,6 +50,11 @@ namespace ColumnsGame.Engine.Drivers
 
         public void EnqueuePlayerRequest(PlayerRequestEnum playerRequest)
         {
+            if (this.IsColumnInFinalPosition)
+            {
+                return;
+            }
+
             this.PlayerRequests.Enqueue(playerRequest);
         }
 
