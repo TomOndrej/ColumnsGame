@@ -3,11 +3,38 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:mvvm="http://prismlibrary.com"
+    xmlns:viewModels="clr-namespace:ColumnsGame.ViewModels;assembly=ColumnsGame"
+    xmlns:constants="clr-namespace:ColumnsGame.Engine.Constants;assembly=ColumnsGame.Engine"
+    xmlns:resources="clr-namespace:ColumnsGame.Resources;assembly=ColumnsGame"
     x:Class="ColumnsGame.Views.GamePage"
-    mvvm:ViewModelLocator.AutowireViewModel="True">
+    mvvm:ViewModelLocator.AutowireViewModel="True"
+    x:DataType="viewModels:GamePageViewModel">
 
     <Grid
-        ColumnSpacing="2"
-        RowSpacing="2"
-        x:Name="GameFieldGrid"/>
+        RowDefinitions="*,60"
+        ColumnDefinitions="*,*,*,*">
+    
+        <Grid
+            Grid.Column="0"
+            Grid.Row="0"
+            Grid.ColumnSpan="4"
+            ColumnSpacing="2"
+            RowSpacing="2"
+            x:Name="GameFieldGrid"/>
+
+        <Button
+            Grid.Column="0"
+            Grid.Row="1"
+            Text="{x:Static resources:Texts.Left}"
+            Command="{Binding MoveColumnCommand}"
+            CommandParameter="{x:Static constants:PlayerRequestEnum.Left}"/>
+
+        <Button
+            Grid.Column="3"
+            Grid.Row="1"
+            Text="{x:Static resources:Texts.Right}"
+            Command="{Binding MoveColumnCommand}"
+            CommandParameter="{x:Static constants:PlayerRequestEnum.Right}"/>
+
+    </Grid>
 </ContentPage>

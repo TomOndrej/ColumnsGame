@@ -14,5 +14,23 @@
                 YCoordinate = this.YCoordinate + 1
             };
         }
+
+        internal BrickPosition IncrementXCoordinate()
+        {
+            return new BrickPosition
+            {
+                XCoordinate = this.XCoordinate + 1,
+                YCoordinate = this.YCoordinate
+            };
+        }
+
+        internal BrickPosition DecrementXCoordinate()
+        {
+            return new BrickPosition
+            {
+                XCoordinate = this.XCoordinate - 1,
+                YCoordinate = this.YCoordinate
+            };
+        }
     }
 }

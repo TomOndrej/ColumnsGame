@@ -1,6 +1,8 @@
-﻿using ColumnsGame.Engine.EventArgs;
+﻿using ColumnsGame.Engine.Constants;
+using ColumnsGame.Engine.EventArgs;
 using ColumnsGame.Game;
 using ColumnsGame.Ioc;
+using Prism.Commands;
 using Prism.Navigation;
 
 namespace ColumnsGame.ViewModels
@@ -8,6 +10,8 @@ namespace ColumnsGame.ViewModels
     public class GamePageViewModel : ViewModelBase
     {
         private int[,] gameFieldMatrix;
+
+        private DelegateCommand<PlayerRequestEnum?> moveColumnCommand;
 
         public GamePageViewModel(INavigationService navigationService) : base(navigationService)
         {
@@ -28,6 +32,19 @@ namespace ColumnsGame.ViewModels
                 this.gameFieldMatrix = value;
                 RaisePropertyChanged();
             }
+        }
+
+        public DelegateCommand<PlayerRequestEnum?> MoveColumnCommand => this.moveColumnCommand ??=
+            new DelegateCommand<PlayerRequestEnum?>(ExecuteMoveColumnCommand);
+
+        private void ExecuteMoveColumnCommand(PlayerRequestEnum? playerRequest)
+        {
+            if (!playerRequest.HasValue)
+            {
+                return;
+            }
+
+            this.Game.RequestColumnMove(playerRequest.Value);
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)

@@ -99,6 +99,16 @@ namespace ColumnsGame.Engine
             }
         }
 
+        public void RequestColumnMove(PlayerRequestEnum playerRequest)
+        {
+            if (!this.IsRunning)
+            {
+                return;
+            }
+
+            ContainerProvider.Resolve<IColumnDriver>().EnqueuePlayerRequest(playerRequest);
+        }
+
         private void InitializeRun()
         {
             this.IsRunning = true;

@@ -8,13 +8,13 @@ namespace ColumnsGame.Navigation
     public static class NavigationServiceExtensions
     {
         public static async Task NavigateToAsync(
-            this INavigationService navigationService, 
-            string name, 
-            NavigationParameters parameters = null, 
-            bool? useModalNavigation = null, 
+            this INavigationService navigationService,
+            string name,
+            NavigationParameters parameters = null,
+            bool? useModalNavigation = null,
             bool animated = true)
         {
-            INavigationResult navigationResult =
+            var navigationResult =
                 await navigationService.NavigateAsync(name, parameters, useModalNavigation, animated);
 
             if (!navigationResult.Success)
@@ -26,6 +26,7 @@ namespace ColumnsGame.Navigation
         [Conditional("DEBUG")]
         private static void ThrowNavigationException(Exception navigationException)
         {
+            Debug.WriteLine(navigationException);
             throw new Exception("Navigation exception", navigationException);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using ColumnsGame.Engine.Columns;
+using ColumnsGame.Engine.Constants;
 
 namespace ColumnsGame.Engine.Drivers
 {
@@ -7,5 +8,7 @@ namespace ColumnsGame.Engine.Drivers
         bool IsColumnInFinalPosition { get; }
 
         void MoveColumnDown();
+
+        void EnqueuePlayerRequest(PlayerRequestEnum playerRequest);
     }
 }

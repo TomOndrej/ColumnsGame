@@ -12,7 +12,7 @@ namespace ColumnsGame.Engine.Drivers
 {
     internal class FieldDriver : DriverBase<GameField>, IFieldDriver
     {
-        public MoveResult TryMoveBricksDown(List<KeyValuePair<IBrick, BrickPosition>> bricks)
+        public MoveResult TryMoveBricks(List<KeyValuePair<IBrick, BrickPosition>> bricks)
         {
             if (bricks == null || !bricks.Any())
             {
@@ -24,7 +24,7 @@ namespace ColumnsGame.Engine.Drivers
                 return new MoveResult(false);
             }
 
-            if (IsRequestedBrickYCoordinateOutsideField(bricks[0]))
+            if (bricks[0].Value.IsOutsideField(this.Settings))
             {
                 return new MoveResult(false);
             }
@@ -71,11 +71,6 @@ namespace ColumnsGame.Engine.Drivers
         private bool IsRequestedBrickPositionOccupiedByAnotherBrick(KeyValuePair<IBrick, BrickPosition> brick)
         {
             return this.DrivenEntity.ContainsKey(brick.Value);
-        }
-
-        private bool IsRequestedBrickYCoordinateOutsideField(KeyValuePair<IBrick, BrickPosition> brick)
-        {
-            return brick.Value.YCoordinate >= this.Settings.FieldHeight;
         }
 
         private void RemoveBrickFromOldPosition(KeyValuePair<IBrick, BrickPosition> brick)

@@ -70,11 +70,29 @@ namespace ColumnsGame.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nová hra.
+        ///   Looks up a localized string similar to Left.
+        /// </summary>
+        internal static string Left {
+            get {
+                return ResourceManager.GetString("Left", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New game.
         /// </summary>
         internal static string NewGame {
             get {
                 return ResourceManager.GetString("NewGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right.
+        /// </summary>
+        internal static string Right {
+            get {
+                return ResourceManager.GetString("Right", resourceCulture);
             }
         }
     }
