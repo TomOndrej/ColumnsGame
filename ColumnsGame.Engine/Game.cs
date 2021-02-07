@@ -17,16 +17,46 @@ namespace ColumnsGame.Engine
     public class Game : INotifyPropertyChanged
     {
         private GameField gameField;
-
         private GameStageEnum gameStage;
-
         private IGameStageSwitcher gameStageSwitcher;
-
-        private bool isGameOver;
 
         private INextStepProvider nextStepProvider;
 
-        public bool IsRunning { get; private set; }
+        private bool isRunning;
+
+        public bool IsRunning
+        {
+            get => this.isRunning;
+            private set
+            {
+                if (this.isRunning == value)
+                {
+                    return;
+                }
+
+                this.isRunning = value;
+                OnPropertyChanged(nameof(this.IsRunning));
+            }
+        }
+
+        private bool isPaused;
+
+        public bool IsPaused
+        {
+            get => this.isPaused;
+            private set
+            {
+                if (this.isPaused == value)
+                {
+                    return;
+                }
+
+                this.isPaused = value;
+                OnPropertyChanged(nameof(this.IsPaused));
+            }
+        }
+
+        private bool isGameOver;
 
         public bool IsGameOver
         {
@@ -79,6 +109,11 @@ namespace ColumnsGame.Engine
                 throw new InvalidOperationException("Game is already running.");
             }
 
+            if (this.IsPaused)
+            {
+                throw new InvalidOperationException("Game is paused. Call Continue instead.");
+            }
+
             if (this.IsGameOver)
             {
                 throw new InvalidOperationException("Game is over.");
@@ -87,6 +122,34 @@ namespace ColumnsGame.Engine
 #pragma warning disable 4014
             Run();
 #pragma warning restore 4014
+        }
+
+        public void Stop()
+        {
+            this.IsRunning = false;
+            this.CancellationTokenSource?.Cancel();
+        }
+
+        public void Pause()
+        {
+            if (!this.IsRunning)
+            {
+                throw new InvalidOperationException("Game is not running.");
+            }
+
+            this.IsRunning = false;
+            this.IsPaused = true;
+        }
+
+        public void Continue()
+        {
+            if (!this.IsPaused)
+            {
+                throw new InvalidOperationException("Game is not paused.");
+            }
+
+            this.IsPaused = false;
+            this.IsRunning = true;
         }
 
         internal void RaiseGameFieldChanged(GameFieldChangedEventArgs gameFieldChangedEventArgs)
@@ -100,12 +163,6 @@ namespace ColumnsGame.Engine
             Stop();
         }
 
-        public void Stop()
-        {
-            this.IsRunning = false;
-            this.CancellationTokenSource?.Cancel();
-        }
-
         private async Task Run()
         {
             InitializeRun();
@@ -116,6 +173,14 @@ namespace ColumnsGame.Engine
                 {
                     while (!this.CancellationToken.IsCancellationRequested)
                     {
+                        if (this.IsPaused)
+                        {
+                            Debug.WriteLine("Waiting for continue.");
+                            await Task.Delay(1000, this.CancellationToken).ConfigureAwait(false);
+
+                            continue;
+                        }
+
                         await ExecuteNextGameStep().ConfigureAwait(false);
                         this.gameStage = this.GameStageSwitcher.SwitchStage(this.gameStage);
                     }

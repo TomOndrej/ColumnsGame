@@ -12,13 +12,6 @@ namespace ColumnsGame.ViewModels
     public class GamePageViewModel : ViewModelBase
     {
         private Engine.Game game;
-        private int[,] gameFieldMatrix;
-
-        private DelegateCommand<PlayerRequestEnum?> moveColumnCommand;
-
-        public GamePageViewModel(INavigationService navigationService) : base(navigationService)
-        {
-        }
 
         public Engine.Game Game
         {
@@ -26,7 +19,11 @@ namespace ColumnsGame.ViewModels
             private set
             {
                 this.game = value;
+
                 RaisePropertyChanged(nameof(this.Game));
+                RaisePropertyChanged(nameof(this.IsPauseContinueButtonEnabled));
+                RaisePropertyChanged(nameof(this.IsOverlayVisible));
+                RaisePropertyChanged(nameof(this.OverlayText));
 
                 if (this.game != null)
                 {
@@ -36,7 +33,7 @@ namespace ColumnsGame.ViewModels
             }
         }
 
-        public string OverlayText => this.Game?.IsGameOver == true ? Texts.GameOver : string.Empty;
+        private int[,] gameFieldMatrix;
 
         public int[,] GameFieldMatrix
         {
@@ -53,6 +50,39 @@ namespace ColumnsGame.ViewModels
             }
         }
 
+        public bool IsOverlayVisible => this.Game != null && (this.Game.IsGameOver || this.Game.IsPaused);
+
+        public string OverlayText
+        {
+            get
+            {
+                if (this.Game != null)
+                {
+                    if (this.Game.IsGameOver)
+                    {
+                        return Texts.GameOver;
+                    }
+
+                    if (this.Game.IsPaused)
+                    {
+                        return Texts.Pause;
+                    }
+                }
+
+                return string.Empty;
+            }
+        }
+
+        public bool IsPauseContinueButtonEnabled => this.Game != null && (this.Game.IsRunning || this.Game.IsPaused);
+
+        public string PauseContinueButtonText => this.Game?.IsPaused == true ? Texts.Continue : Texts.Pause;
+
+        public GamePageViewModel(INavigationService navigationService) : base(navigationService)
+        {
+        }
+
+        private DelegateCommand<PlayerRequestEnum?> moveColumnCommand;
+
         public DelegateCommand<PlayerRequestEnum?> MoveColumnCommand => this.moveColumnCommand ??=
             new DelegateCommand<PlayerRequestEnum?>(ExecuteMoveColumnCommand);
 
@@ -66,14 +96,21 @@ namespace ColumnsGame.ViewModels
             this.Game.RequestColumnMove(playerRequest.Value);
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        private DelegateCommand pauseContinueCommand;
+
+        public DelegateCommand PauseContinueCommand =>
+            this.pauseContinueCommand ??= new DelegateCommand(ExecutePauseContinueCommand);
+
+        private void ExecutePauseContinueCommand()
         {
-            base.OnNavigatedTo(parameters);
-
-            var gameSettings = ContainerProvider.Resolve<IDefaultGameSettingsFactory>().Create();
-            this.Game = ContainerProvider.Resolve<IGameFactory>().Create(gameSettings);
-
-            this.Game.Start();
+            if (this.Game.IsRunning)
+            {
+                this.Game.Pause();
+            }
+            else if (this.Game.IsPaused)
+            {
+                this.Game.Continue();
+            }
         }
 
         public override void OnNavigatedFrom(INavigationParameters parameters)
@@ -84,6 +121,16 @@ namespace ColumnsGame.ViewModels
             {
                 this.Game.Stop();
             }
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+
+            var gameSettings = ContainerProvider.Resolve<IDefaultGameSettingsFactory>().Create();
+            this.Game = ContainerProvider.Resolve<IGameFactory>().Create(gameSettings);
+
+            this.Game.Start();
         }
 
         public override void Destroy()
@@ -104,9 +151,21 @@ namespace ColumnsGame.ViewModels
 
         private void OnGamePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Engine.Game.IsGameOver))
+            if (e.PropertyName == nameof(Engine.Game.IsRunning))
+            {
+                RaisePropertyChanged(nameof(this.IsPauseContinueButtonEnabled));
+            }
+            else if (e.PropertyName == nameof(Engine.Game.IsGameOver))
             {
                 RaisePropertyChanged(nameof(this.OverlayText));
+                RaisePropertyChanged(nameof(this.IsOverlayVisible));
+            }
+            else if (e.PropertyName == nameof(Engine.Game.IsPaused))
+            {
+                RaisePropertyChanged(nameof(this.PauseContinueButtonText));
+                RaisePropertyChanged(nameof(this.IsPauseContinueButtonEnabled));
+                RaisePropertyChanged(nameof(this.OverlayText));
+                RaisePropertyChanged(nameof(this.IsOverlayVisible));
             }
         }
     }

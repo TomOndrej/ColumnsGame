@@ -120,6 +120,9 @@
   <data name="AppName" xml:space="preserve">
     <value>Columns Game</value>
   </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
   <data name="GameOver" xml:space="preserve">
     <value>Game Over</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="NewGame" xml:space="preserve">
     <value>New game</value>
+  </data>
+  <data name="Pause" xml:space="preserve">
+    <value>Pause</value>
   </data>
   <data name="Right" xml:space="preserve">
     <value>Right</value>

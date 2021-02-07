@@ -11,6 +11,14 @@
     mvvm:ViewModelLocator.AutowireViewModel="True"
     x:DataType="viewModels:GamePageViewModel">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Order="Primary"
+            Text="{Binding PauseContinueButtonText}"
+            IsEnabled="{Binding IsPauseContinueButtonEnabled}"
+            Command="{Binding PauseContinueCommand}"/>
+    </ContentPage.ToolbarItems>
+
     <RelativeLayout>
 
         <Grid
@@ -51,7 +59,7 @@
         </Grid>
 
         <controls:GameOverlay
-            IsVisible="{Binding Game.IsGameOver}">
+            IsVisible="{Binding IsOverlayVisible}">
 
             <controls:GameOverlayLabel
                 Text="{Binding OverlayText}"/>
