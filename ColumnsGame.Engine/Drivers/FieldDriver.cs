@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ColumnsGame.Engine.Bricks;
-using ColumnsGame.Engine.EventArgs;
 using ColumnsGame.Engine.Field;
 using ColumnsGame.Engine.Ioc;
 using ColumnsGame.Engine.Positions;
 using ColumnsGame.Engine.Providers;
 using ColumnsGame.Engine.RemovablePatterns;
+using ColumnsGame.Engine.Services;
 
 namespace ColumnsGame.Engine.Drivers
 {
@@ -37,14 +37,14 @@ namespace ColumnsGame.Engine.Drivers
                 SetBrickToNewPosition(brick);
             }
 
-            CreateAndNotifyNewGameFieldData();
+            ContainerProvider.Resolve<INotificationService>().CreateAndNotifyNewGameFieldData();
 
             return new MoveResult(true);
         }
 
         public void ChangeKindOfBricks()
         {
-            CreateAndNotifyNewGameFieldData();
+            ContainerProvider.Resolve<INotificationService>().CreateAndNotifyNewGameFieldData();
         }
 
         public async Task RemoveBrickPatterns()
@@ -69,7 +69,7 @@ namespace ColumnsGame.Engine.Drivers
 
                 RemoveBricksFromPositions(positionsToRemove);
 
-                CreateAndNotifyNewGameFieldData();
+                ContainerProvider.Resolve<INotificationService>().CreateAndNotifyNewGameFieldData();
 
                 await Task.Delay(500).ConfigureAwait(false);
 
@@ -80,7 +80,7 @@ namespace ColumnsGame.Engine.Drivers
                     return;
                 }
 
-                CreateAndNotifyNewGameFieldData();
+                ContainerProvider.Resolve<INotificationService>().CreateAndNotifyNewGameFieldData();
 
                 await Task.Delay(500).ConfigureAwait(false);
             }
@@ -97,16 +97,6 @@ namespace ColumnsGame.Engine.Drivers
         public GameField GetFieldState()
         {
             return this.DrivenEntity;
-        }
-
-        public void CreateAndNotifyNewGameFieldData()
-        {
-            var newGameFieldData = CreateEmptyGameFieldData();
-
-            FillGameFieldData(newGameFieldData);
-
-            ContainerProvider.Resolve<IGameProvider>().GetGameInstance()
-                ?.RaiseGameFieldChanged(new GameFieldChangedEventArgs(newGameFieldData));
         }
 
         private List<BrickPosition> GetPositionsWithBricksMarkedToDestroy()
@@ -166,31 +156,6 @@ namespace ColumnsGame.Engine.Drivers
             foreach (var brickPosition in positionsToRemove)
             {
                 this.DrivenEntity.Remove(brickPosition);
-            }
-        }
-
-        private int[,] CreateEmptyGameFieldData()
-        {
-            var settings = ContainerProvider.Resolve<ISettingsProvider>().GetSettingsInstance();
-
-            var newGameFieldData = new int[settings.FieldWidth, settings.FieldHeight];
-
-            for (var i = 0; i < settings.FieldWidth; i++)
-            {
-                for (var j = 0; j < settings.FieldHeight; j++)
-                {
-                    newGameFieldData[i, j] = -1;
-                }
-            }
-
-            return newGameFieldData;
-        }
-
-        private void FillGameFieldData(int[,] newGameFieldData)
-        {
-            foreach (var pair in this.DrivenEntity)
-            {
-                newGameFieldData[pair.Key.XCoordinate, pair.Key.YCoordinate] = pair.Value.BrickKind;
             }
         }
 

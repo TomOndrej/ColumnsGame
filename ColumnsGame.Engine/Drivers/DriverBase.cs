@@ -3,7 +3,7 @@
     internal abstract class DriverBase<TDrivenEntity> : IDriver<TDrivenEntity>
         where TDrivenEntity : IDrivable
     {
-        protected TDrivenEntity DrivenEntity { get; set; }
+        public TDrivenEntity DrivenEntity { get; private set; }
 
         public virtual void Drive(TDrivenEntity entityToDrive)
         {

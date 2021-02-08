@@ -5,6 +5,7 @@ using ColumnsGame.Engine.Field;
 using ColumnsGame.Engine.GameSteps;
 using ColumnsGame.Engine.Providers;
 using ColumnsGame.Engine.RemovablePatterns;
+using ColumnsGame.Engine.Services;
 using Unity;
 
 namespace ColumnsGame.Engine.Ioc
@@ -31,6 +32,7 @@ namespace ColumnsGame.Engine.Ioc
             newContainer.RegisterType(typeof(IColumnFactory), typeof(ColumnFactory));
             newContainer.RegisterType(typeof(IRemovablePatternsProvider), typeof(RemovablePatternsProvider));
             newContainer.RegisterType(typeof(ICurrentGameDataProvider), typeof(CurrentGameDataProvider));
+            newContainer.RegisterType(typeof(INotificationService), typeof(NotificationService));
 
             newContainer.RegisterSingleton(typeof(IColumnDriver), typeof(ColumnDriver));
             newContainer.RegisterSingleton(typeof(IFieldDriver), typeof(FieldDriver));

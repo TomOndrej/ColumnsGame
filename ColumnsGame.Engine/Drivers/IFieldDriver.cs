@@ -17,7 +17,5 @@ namespace ColumnsGame.Engine.Drivers
         void StopGameIfGameIsOver();
 
         GameField GetFieldState();
-
-        void CreateAndNotifyNewGameFieldData();
     }
 }

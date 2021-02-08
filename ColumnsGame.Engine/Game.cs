@@ -11,6 +11,7 @@ using ColumnsGame.Engine.GameSteps;
 using ColumnsGame.Engine.Interfaces;
 using ColumnsGame.Engine.Ioc;
 using ColumnsGame.Engine.Providers;
+using ColumnsGame.Engine.Services;
 
 namespace ColumnsGame.Engine
 {
@@ -174,7 +175,7 @@ namespace ColumnsGame.Engine
 
         public void RequestGameFieldDataNotification()
         {
-            ContainerProvider.Resolve<IFieldDriver>().CreateAndNotifyNewGameFieldData();
+            ContainerProvider.Resolve<INotificationService>().CreateAndNotifyNewGameFieldData();
         }
 
         internal void RaiseGameFieldChanged(GameFieldChangedEventArgs gameFieldChangedEventArgs)
