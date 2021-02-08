@@ -10,7 +10,7 @@ namespace ColumnsGame.Services
     [IocRegisterImplementation]
     internal class SaveGameService : ISaveGameService
     {
-        private const string PreferencesKey = "SavedGame";
+        private const string SavedGameKey = "SavedGame";
 
         public CurrentGameData CreateEmptyGameData()
         {
@@ -25,17 +25,17 @@ namespace ColumnsGame.Services
             }
 
             var serializedGameData = JsonConvert.SerializeObject(gameData);
-            Preferences.Set(PreferencesKey, serializedGameData);
+            Preferences.Set(SavedGameKey, serializedGameData);
         }
 
         public CurrentGameData LoadGameData()
         {
-            if (!Preferences.ContainsKey(PreferencesKey))
+            if (!Preferences.ContainsKey(SavedGameKey))
             {
                 return null;
             }
 
-            var serializedGameData = Preferences.Get(PreferencesKey, null);
+            var serializedGameData = Preferences.Get(SavedGameKey, null);
 
             TypeDescriptor.AddAttributes(typeof((int, int)),
                 new TypeConverterAttribute(typeof(TupleConverter)));
@@ -45,12 +45,12 @@ namespace ColumnsGame.Services
 
         public void DeleteGameData()
         {
-            if (!Preferences.ContainsKey(PreferencesKey))
+            if (!Preferences.ContainsKey(SavedGameKey))
             {
                 return;
             }
 
-            Preferences.Remove(PreferencesKey);
+            Preferences.Remove(SavedGameKey);
         }
     }
 }
