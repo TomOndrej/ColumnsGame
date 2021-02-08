@@ -1,12 +1,15 @@
-﻿using ColumnsGame.Engine.Interfaces;
+﻿using ColumnsGame.Engine.Ioc;
+using ColumnsGame.Engine.Providers;
 
 namespace ColumnsGame.Engine.Field
 {
     internal class GameFieldFactory : IGameFieldFactory
     {
-        public GameField CreateEmptyField(IGameSettings gameSettings)
+        public GameField CreateEmptyField()
         {
-            return new GameField(gameSettings.FieldWidth, gameSettings.FieldHeight);
+            var settings = ContainerProvider.Resolve<ISettingsProvider>().GetSettingsInstance();
+
+            return new GameField(settings.FieldWidth, settings.FieldHeight);
         }
     }
 }

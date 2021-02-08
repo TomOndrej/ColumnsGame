@@ -8,6 +8,7 @@ using ColumnsGame.Engine.Columns;
 using ColumnsGame.Engine.Constants;
 using ColumnsGame.Engine.Ioc;
 using ColumnsGame.Engine.Positions;
+using ColumnsGame.Engine.Providers;
 
 namespace ColumnsGame.Engine.Drivers
 {
@@ -120,7 +121,7 @@ namespace ColumnsGame.Engine.Drivers
                 new KeyValuePair<IBrick, BrickPosition>(brick.Key, changeBrickPositionFunc(brick.Value))).ToList();
 
             var brickPositionsToFieldPush = requestedBrickPositions
-                .Where(pair => !pair.Value.IsOutsideField(this.Settings))
+                .Where(pair => !pair.Value.IsOutsideField())
                 .OrderByDescending(pair => pair.Value.YCoordinate).ToList();
 
             if (!brickPositionsToFieldPush.Any())
@@ -216,7 +217,9 @@ namespace ColumnsGame.Engine.Drivers
 
         private int GetXCoordinateOfNewlyDrivenColumn()
         {
-            return this.Settings.FieldWidth / 2;
+            var settings = ContainerProvider.Resolve<ISettingsProvider>().GetSettingsInstance();
+
+            return settings.FieldWidth / 2;
         }
 
         private int GetYCoordinateOfNewlyDrivenColumn(int brickIndex)

@@ -96,9 +96,6 @@ namespace ColumnsGame.Engine
             ContainerProvider.Resolve<ISettingsProvider>().SetSettingsInstance(this.Settings);
             ContainerProvider.Resolve<IGameProvider>().SetGameInstance(this);
 
-            ContainerProvider.Resolve<IColumnDriver>().Initialize(this.Settings);
-            ContainerProvider.Resolve<IFieldDriver>().Initialize(this.Settings);
-
             if (currentGameData == null)
             {
                 InitializeNewGame();
@@ -198,7 +195,7 @@ namespace ColumnsGame.Engine
 
         private void InitializeNewGame()
         {
-            this.GameField = ContainerProvider.Resolve<IGameFieldFactory>().CreateEmptyField(this.Settings);
+            this.GameField = ContainerProvider.Resolve<IGameFieldFactory>().CreateEmptyField();
             this.gameStage = GameStageEnum.CreateColumn;
         }
 
@@ -269,7 +266,7 @@ namespace ColumnsGame.Engine
 
         private Task ExecuteNextGameStep()
         {
-            var stepToExecute = this.NextStepProvider.GetNextGameStep(this.gameStage, this.Settings);
+            var stepToExecute = this.NextStepProvider.GetNextGameStep(this.gameStage);
             return stepToExecute.ExecuteStep();
         }
 

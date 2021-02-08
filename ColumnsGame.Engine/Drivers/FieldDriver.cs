@@ -27,7 +27,7 @@ namespace ColumnsGame.Engine.Drivers
                 return new MoveResult(false);
             }
 
-            if (bricks[0].Value.IsOutsideField(this.Settings))
+            if (bricks[0].Value.IsOutsideField())
             {
                 return new MoveResult(false);
             }
@@ -121,9 +121,11 @@ namespace ColumnsGame.Engine.Drivers
         {
             var brickAffectedByGravity = false;
 
-            var indexOfLastButOneRow = this.Settings.FieldHeight - 2;
+            var settings = ContainerProvider.Resolve<ISettingsProvider>().GetSettingsInstance();
 
-            for (var i = 0; i < this.Settings.FieldWidth; i++)
+            var indexOfLastButOneRow = settings.FieldHeight - 2;
+
+            for (var i = 0; i < settings.FieldWidth; i++)
             {
                 for (var j = indexOfLastButOneRow; j >= 0; j--)
                 {
@@ -137,7 +139,7 @@ namespace ColumnsGame.Engine.Drivers
                     var positionUnderBrick = brickPosition.IncrementYCoordinate();
                     BrickPosition? targetBrickPosition = null;
 
-                    while (positionUnderBrick.YCoordinate < this.Settings.FieldHeight)
+                    while (positionUnderBrick.YCoordinate < settings.FieldHeight)
                     {
                         if (!this.DrivenEntity.ContainsKey(positionUnderBrick))
                         {
@@ -172,11 +174,13 @@ namespace ColumnsGame.Engine.Drivers
 
         private int[,] CreateEmptyGameFieldData()
         {
-            var newGameFieldData = new int[this.Settings.FieldWidth, this.Settings.FieldHeight];
+            var settings = ContainerProvider.Resolve<ISettingsProvider>().GetSettingsInstance();
 
-            for (var i = 0; i < this.Settings.FieldWidth; i++)
+            var newGameFieldData = new int[settings.FieldWidth, settings.FieldHeight];
+
+            for (var i = 0; i < settings.FieldWidth; i++)
             {
-                for (var j = 0; j < this.Settings.FieldHeight; j++)
+                for (var j = 0; j < settings.FieldHeight; j++)
                 {
                     newGameFieldData[i, j] = -1;
                 }

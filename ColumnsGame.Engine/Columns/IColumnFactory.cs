@@ -1,9 +1,7 @@
-﻿using ColumnsGame.Engine.Interfaces;
-
-namespace ColumnsGame.Engine.Columns
+﻿namespace ColumnsGame.Engine.Columns
 {
-    interface IColumnFactory
+    internal interface IColumnFactory
     {
-        Column CreateColumn(IGameSettings gameSettings);
+        Column CreateColumn();
     }
 }

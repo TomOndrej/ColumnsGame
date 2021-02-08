@@ -1,17 +1,13 @@
-﻿using ColumnsGame.Engine.Interfaces;
+﻿using ColumnsGame.Engine.Ioc;
+using ColumnsGame.Engine.Providers;
 
 namespace ColumnsGame.Engine.Positions
 {
     internal static class BrickPositionExtensions
     {
-        internal static bool IsOutsideField(this BrickPosition brickPosition, IGameSettings gameSettings)
+        internal static bool IsOutsideField(this BrickPosition brickPosition)
         {
             if (brickPosition.YCoordinate < 0)
-            {
-                return true;
-            }
-
-            if (brickPosition.YCoordinate >= gameSettings.FieldHeight)
             {
                 return true;
             }
@@ -21,7 +17,14 @@ namespace ColumnsGame.Engine.Positions
                 return true;
             }
 
-            if (brickPosition.XCoordinate >= gameSettings.FieldWidth)
+            var settings = ContainerProvider.Resolve<ISettingsProvider>().GetSettingsInstance();
+
+            if (brickPosition.YCoordinate >= settings.FieldHeight)
+            {
+                return true;
+            }
+
+            if (brickPosition.XCoordinate >= settings.FieldWidth)
             {
                 return true;
             }
