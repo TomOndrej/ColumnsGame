@@ -14,7 +14,7 @@ namespace ColumnsGame.Engine.Drivers
 {
     internal class FieldDriver : DriverBase<GameField>, IFieldDriver
     {
-        public MoveResult TryMoveBricks(List<KeyValuePair<IBrick, BrickPosition>> bricks)
+        public MoveResult TryMoveBricks(List<KeyValuePair<BrickPosition, IBrick>> bricks)
         {
             if (bricks == null || !bricks.Any())
             {
@@ -26,7 +26,7 @@ namespace ColumnsGame.Engine.Drivers
                 return new MoveResult(false);
             }
 
-            if (bricks[0].Value.IsOutsideField())
+            if (bricks[0].Key.IsOutsideField())
             {
                 return new MoveResult(false);
             }
@@ -194,18 +194,18 @@ namespace ColumnsGame.Engine.Drivers
             }
         }
 
-        private bool IsRequestedBrickPositionOccupiedByAnotherBrick(KeyValuePair<IBrick, BrickPosition> brick)
+        private bool IsRequestedBrickPositionOccupiedByAnotherBrick(KeyValuePair<BrickPosition, IBrick> brick)
         {
-            return this.DrivenEntity.ContainsKey(brick.Value);
+            return this.DrivenEntity.ContainsKey(brick.Key);
         }
 
-        private void RemoveBrickFromOldPosition(KeyValuePair<IBrick, BrickPosition> brick)
+        private void RemoveBrickFromOldPosition(KeyValuePair<BrickPosition, IBrick> brick)
         {
             BrickPosition? keyToRemove = null;
 
             foreach (var pair in this.DrivenEntity)
             {
-                if (pair.Value != brick.Key)
+                if (pair.Value != brick.Value)
                 {
                     continue;
                 }
@@ -220,14 +220,14 @@ namespace ColumnsGame.Engine.Drivers
             }
         }
 
-        private void SetBrickToNewPosition(KeyValuePair<IBrick, BrickPosition> brick)
+        private void SetBrickToNewPosition(KeyValuePair<BrickPosition, IBrick> brick)
         {
-            if (this.DrivenEntity.ContainsKey(brick.Value))
+            if (this.DrivenEntity.ContainsKey(brick.Key))
             {
                 return;
             }
 
-            this.DrivenEntity.Add(brick.Value, brick.Key);
+            this.DrivenEntity.Add(brick.Key, brick.Value);
         }
     }
 }

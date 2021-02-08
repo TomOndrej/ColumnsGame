@@ -14,7 +14,7 @@ namespace ColumnsGame.Engine.Drivers
 {
     internal class ColumnDriver : DriverBase<Column>, IColumnDriver
     {
-        private readonly Dictionary<IBrick, BrickPosition> bricksPositions = new Dictionary<IBrick, BrickPosition>();
+        private readonly Dictionary<BrickPosition, IBrick> bricksPositions = new Dictionary<BrickPosition, IBrick>();
 
         private ConcurrentQueue<PlayerRequestEnum> playerRequests;
 
@@ -36,12 +36,12 @@ namespace ColumnsGame.Engine.Drivers
             for (var i = 0; i < this.DrivenEntity.Count; i++)
             {
                 this.bricksPositions.Add(
-                    this.DrivenEntity[i],
                     new BrickPosition
                     {
                         XCoordinate = GetXCoordinateOfNewlyDrivenColumn(),
                         YCoordinate = GetYCoordinateOfNewlyDrivenColumn(i)
-                    });
+                    },
+                    this.DrivenEntity[i]);
             }
 
             this.IsColumnInFinalPosition = false;
@@ -62,7 +62,7 @@ namespace ColumnsGame.Engine.Drivers
 
             foreach (var pair in restoredColumn)
             {
-                this.bricksPositions.Add(pair.Value, pair.Key);
+                this.bricksPositions.Add(pair.Key, pair.Value);
             }
 
             this.IsColumnInFinalPosition = false;
@@ -80,7 +80,7 @@ namespace ColumnsGame.Engine.Drivers
             this.PlayerRequests.Enqueue(playerRequest);
         }
 
-        public Dictionary<IBrick, BrickPosition> GetColumnState()
+        public Dictionary<BrickPosition, IBrick> GetColumnState()
         {
             if (this.IsColumnInFinalPosition)
             {
@@ -117,12 +117,12 @@ namespace ColumnsGame.Engine.Drivers
                 return false;
             }
 
-            var requestedBrickPositions = this.bricksPositions.Select(brick =>
-                new KeyValuePair<IBrick, BrickPosition>(brick.Key, changeBrickPositionFunc(brick.Value))).ToList();
+            var requestedBrickPositions = this.bricksPositions.Select(pair =>
+                new KeyValuePair<BrickPosition, IBrick>(changeBrickPositionFunc(pair.Key), pair.Value)).ToList();
 
             var brickPositionsToFieldPush = requestedBrickPositions
-                .Where(pair => !pair.Value.IsOutsideField())
-                .OrderByDescending(pair => pair.Value.YCoordinate).ToList();
+                .Where(pair => !pair.Key.IsOutsideField())
+                .OrderByDescending(pair => pair.Key.YCoordinate).ToList();
 
             if (!brickPositionsToFieldPush.Any())
             {

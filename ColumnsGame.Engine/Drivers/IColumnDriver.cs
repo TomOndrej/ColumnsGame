@@ -14,7 +14,7 @@ namespace ColumnsGame.Engine.Drivers
 
         void EnqueuePlayerRequest(PlayerRequestEnum playerRequest);
 
-        Dictionary<IBrick, BrickPosition> GetColumnState();
+        Dictionary<BrickPosition, IBrick> GetColumnState();
 
         void DriveRestored(Dictionary<BrickPosition, IBrick> restoredColumn);
     }

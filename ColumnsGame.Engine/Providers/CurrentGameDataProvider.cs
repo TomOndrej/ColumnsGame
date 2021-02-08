@@ -56,7 +56,7 @@ namespace ColumnsGame.Engine.Providers
             if (columnState != null)
             {
                 currentGameData.Column =
-                    columnState.ToDictionary(pair => pair.Value.ToTuple(), pair => pair.Key.BrickKind);
+                    columnState.ToDictionary(pair => pair.Key.ToTuple(), pair => pair.Value.BrickKind);
             }
         }
 
