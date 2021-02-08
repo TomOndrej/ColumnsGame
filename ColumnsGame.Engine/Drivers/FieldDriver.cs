@@ -73,7 +73,8 @@ namespace ColumnsGame.Engine.Drivers
 
                 await Task.Delay(500).ConfigureAwait(false);
 
-                var gravityAffectedBricks = GravitateGameField();
+                var gravityAffectedBricks = ContainerProvider.Resolve<IGravitationService>()
+                    .GravitateGameField(this.DrivenEntity);
 
                 if (!gravityAffectedBricks)
                 {
@@ -102,53 +103,6 @@ namespace ColumnsGame.Engine.Drivers
         private List<BrickPosition> GetPositionsWithBricksMarkedToDestroy()
         {
             return this.DrivenEntity.Where(pair => pair.Value.Destroy).Select(pair => pair.Key).ToList();
-        }
-
-        private bool GravitateGameField()
-        {
-            var brickAffectedByGravity = false;
-
-            var settings = ContainerProvider.Resolve<ISettingsProvider>().GetSettingsInstance();
-
-            var indexOfLastButOneRow = settings.FieldHeight - 2;
-
-            for (var i = 0; i < settings.FieldWidth; i++)
-            {
-                for (var j = indexOfLastButOneRow; j >= 0; j--)
-                {
-                    var brickPosition = new BrickPosition {XCoordinate = i, YCoordinate = j};
-
-                    if (!this.DrivenEntity.TryGetValue(brickPosition, out var brick))
-                    {
-                        continue;
-                    }
-
-                    var positionUnderBrick = brickPosition.IncrementYCoordinate();
-                    BrickPosition? targetBrickPosition = null;
-
-                    while (positionUnderBrick.YCoordinate < settings.FieldHeight)
-                    {
-                        if (!this.DrivenEntity.ContainsKey(positionUnderBrick))
-                        {
-                            targetBrickPosition = positionUnderBrick;
-                        }
-
-                        positionUnderBrick = positionUnderBrick.IncrementYCoordinate();
-                    }
-
-                    if (!targetBrickPosition.HasValue)
-                    {
-                        continue;
-                    }
-
-                    this.DrivenEntity.Remove(brickPosition);
-                    this.DrivenEntity.Add(targetBrickPosition.Value, brick);
-
-                    brickAffectedByGravity = true;
-                }
-            }
-
-            return brickAffectedByGravity;
         }
 
         private void RemoveBricksFromPositions(List<BrickPosition> positionsToRemove)
