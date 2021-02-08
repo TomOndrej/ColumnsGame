@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ColumnsGame.Engine.Bricks;
@@ -91,8 +90,6 @@ namespace ColumnsGame.Engine.Drivers
         {
             if (this.DrivenEntity.Any(pair => pair.Key.YCoordinate == 0))
             {
-                Debug.WriteLine("Game over.");
-
                 ContainerProvider.Resolve<IGameProvider>().GetGameInstance()?.GameOver();
             }
         }
@@ -225,6 +222,11 @@ namespace ColumnsGame.Engine.Drivers
 
         private void SetBrickToNewPosition(KeyValuePair<IBrick, BrickPosition> brick)
         {
+            if (this.DrivenEntity.ContainsKey(brick.Value))
+            {
+                return;
+            }
+
             this.DrivenEntity.Add(brick.Value, brick.Key);
         }
     }
