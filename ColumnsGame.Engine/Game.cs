@@ -18,9 +18,6 @@ namespace ColumnsGame.Engine
     public class Game : INotifyPropertyChanged
     {
         private GameStageEnum gameStage;
-        private IGameStageSwitcher gameStageSwitcher;
-
-        private INextStepProvider nextStepProvider;
 
         private bool isRunning;
 
@@ -56,6 +53,7 @@ namespace ColumnsGame.Engine
             }
         }
 
+
         private bool isGameOver;
 
         public bool IsGameOver
@@ -79,8 +77,12 @@ namespace ColumnsGame.Engine
 
         private CancellationToken CancellationToken => this.CancellationTokenSource.Token;
 
+        private INextStepProvider nextStepProvider;
+
         private INextStepProvider NextStepProvider =>
             this.nextStepProvider ??= ContainerProvider.Resolve<INextStepProvider>();
+
+        private IGameStageSwitcher gameStageSwitcher;
 
         private IGameStageSwitcher GameStageSwitcher =>
             this.gameStageSwitcher ??= ContainerProvider.Resolve<IGameStageSwitcher>();
