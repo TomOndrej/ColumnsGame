@@ -10,13 +10,8 @@ namespace ColumnsGame
     public abstract class AppBase : PrismApplication
     {
         protected AppBase(IPlatformInitializer platformInitializer) : base(platformInitializer)
-        { }
-
-        protected override void OnStart()
-        { }
-
-        protected override void OnSleep()
-        { }
+        {
+        }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -27,9 +22,6 @@ namespace ColumnsGame
         {
             await this.NavigationService.NavigateToAsync($"/{nameof(MainNavigationPage)}/{nameof(MenuPage)}");
         }
-
-        protected override void OnResume()
-        { }
 
         protected override IContainerExtension CreateContainerExtension()
         {

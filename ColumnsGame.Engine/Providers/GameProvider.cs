@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ColumnsGame.Engine.GameProvider
+namespace ColumnsGame.Engine.Providers
 {
     internal class GameProvider : IGameProvider
     {

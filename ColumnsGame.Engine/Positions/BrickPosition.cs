@@ -41,5 +41,15 @@
                 YCoordinate = this.YCoordinate
             };
         }
+
+        internal (int X, int Y) ToTuple()
+        {
+            return (this.XCoordinate, this.YCoordinate);
+        }
+
+        internal static BrickPosition FromTuple((int X, int Y) tuple)
+        {
+            return new BrickPosition {XCoordinate = tuple.X, YCoordinate = tuple.Y};
+        }
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using ColumnsGame.Engine.Bricks;
 using ColumnsGame.Engine.EventArgs;
 using ColumnsGame.Engine.Field;
-using ColumnsGame.Engine.GameProvider;
 using ColumnsGame.Engine.Ioc;
 using ColumnsGame.Engine.Positions;
+using ColumnsGame.Engine.Providers;
 using ColumnsGame.Engine.RemovablePatterns;
 
 namespace ColumnsGame.Engine.Drivers
@@ -97,6 +97,21 @@ namespace ColumnsGame.Engine.Drivers
             }
         }
 
+        public GameField GetFieldState()
+        {
+            return this.DrivenEntity;
+        }
+
+        public void CreateAndNotifyNewGameFieldData()
+        {
+            var newGameFieldData = CreateEmptyGameFieldData();
+
+            FillGameFieldData(newGameFieldData);
+
+            ContainerProvider.Resolve<IGameProvider>().GetGameInstance()
+                ?.RaiseGameFieldChanged(new GameFieldChangedEventArgs(newGameFieldData));
+        }
+
         private List<BrickPosition> GetPositionsWithBricksMarkedToDestroy()
         {
             return this.DrivenEntity.Where(pair => pair.Value.Destroy).Select(pair => pair.Key).ToList();
@@ -153,16 +168,6 @@ namespace ColumnsGame.Engine.Drivers
             {
                 this.DrivenEntity.Remove(brickPosition);
             }
-        }
-
-        private void CreateAndNotifyNewGameFieldData()
-        {
-            var newGameFieldData = CreateEmptyGameFieldData();
-
-            FillGameFieldData(newGameFieldData);
-
-            ContainerProvider.Resolve<IGameProvider>().GetGameInstance()
-                ?.RaiseGameFieldChanged(new GameFieldChangedEventArgs(newGameFieldData));
         }
 
         private int[,] CreateEmptyGameFieldData()

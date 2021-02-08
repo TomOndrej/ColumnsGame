@@ -7,16 +7,15 @@ using ColumnsGame.Engine.Constants;
 using ColumnsGame.Engine.Drivers;
 using ColumnsGame.Engine.EventArgs;
 using ColumnsGame.Engine.Field;
-using ColumnsGame.Engine.GameProvider;
 using ColumnsGame.Engine.GameSteps;
 using ColumnsGame.Engine.Interfaces;
 using ColumnsGame.Engine.Ioc;
+using ColumnsGame.Engine.Providers;
 
 namespace ColumnsGame.Engine
 {
     public class Game : INotifyPropertyChanged
     {
-        private GameField gameField;
         private GameStageEnum gameStage;
         private IGameStageSwitcher gameStageSwitcher;
 
@@ -85,21 +84,31 @@ namespace ColumnsGame.Engine
         private IGameStageSwitcher GameStageSwitcher =>
             this.gameStageSwitcher ??= ContainerProvider.Resolve<IGameStageSwitcher>();
 
-        private GameField GameField =>
-            this.gameField ??= ContainerProvider.Resolve<IGameFieldFactory>().CreateEmptyField(this.Settings);
+        private GameField GameField { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public event EventHandler<GameFieldChangedEventArgs> GameFieldChanged;
 
-        public void Initialize(IGameSettings gameSettings)
+        public void Initialize(IGameSettings gameSettings, ICurrentGameData currentGameData = null)
         {
             this.Settings = gameSettings;
-            this.CancellationTokenSource = new CancellationTokenSource();
-
+            ContainerProvider.Resolve<ISettingsProvider>().SetSettingsInstance(this.Settings);
             ContainerProvider.Resolve<IGameProvider>().SetGameInstance(this);
+
             ContainerProvider.Resolve<IColumnDriver>().Initialize(this.Settings);
             ContainerProvider.Resolve<IFieldDriver>().Initialize(this.Settings);
+
+            if (currentGameData == null)
+            {
+                InitializeNewGame();
+            }
+            else
+            {
+                InitializeRestoredGame(currentGameData);
+            }
+
+            ContainerProvider.Resolve<IFieldDriver>().Drive(this.GameField);
         }
 
         public void Start()
@@ -137,7 +146,8 @@ namespace ColumnsGame.Engine
                 throw new InvalidOperationException("Game is not running.");
             }
 
-            this.IsRunning = false;
+            this.CancellationTokenSource.Cancel();
+
             this.IsPaused = true;
         }
 
@@ -149,7 +159,25 @@ namespace ColumnsGame.Engine
             }
 
             this.IsPaused = false;
-            this.IsRunning = true;
+
+#pragma warning disable 4014
+            Run();
+#pragma warning restore 4014
+        }
+
+        public void RequestColumnMove(PlayerRequestEnum playerRequest)
+        {
+            if (!this.IsRunning)
+            {
+                return;
+            }
+
+            ContainerProvider.Resolve<IColumnDriver>().EnqueuePlayerRequest(playerRequest);
+        }
+
+        public void RequestGameFieldDataNotification()
+        {
+            ContainerProvider.Resolve<IFieldDriver>().CreateAndNotifyNewGameFieldData();
         }
 
         internal void RaiseGameFieldChanged(GameFieldChangedEventArgs gameFieldChangedEventArgs)
@@ -163,6 +191,42 @@ namespace ColumnsGame.Engine
             Stop();
         }
 
+        public void FillCurrentGameData(ICurrentGameData currentGameData)
+        {
+            ContainerProvider.Resolve<ICurrentGameDataProvider>().FillCurrentGameData(currentGameData);
+        }
+
+        private void InitializeNewGame()
+        {
+            this.GameField = ContainerProvider.Resolve<IGameFieldFactory>().CreateEmptyField(this.Settings);
+            this.gameStage = GameStageEnum.CreateColumn;
+        }
+
+        private void InitializeRestoredGame(ICurrentGameData currentGameData)
+        {
+            this.IsPaused = true;
+
+            var currentGameDataProvider = ContainerProvider.Resolve<ICurrentGameDataProvider>();
+
+            currentGameDataProvider.RestoreGameFieldAndColumnFromGameData(
+                currentGameData,
+                out var restoredGameField,
+                out var restoredColumn);
+
+            this.GameField = restoredGameField;
+
+            if (restoredColumn == null)
+            {
+                this.gameStage = GameStageEnum.CleanField;
+            }
+            else
+            {
+                this.gameStage = GameStageEnum.FallColumn;
+
+                ContainerProvider.Resolve<IColumnDriver>().DriveRestored(restoredColumn);
+            }
+        }
+
         private async Task Run()
         {
             InitializeRun();
@@ -173,14 +237,6 @@ namespace ColumnsGame.Engine
                 {
                     while (!this.CancellationToken.IsCancellationRequested)
                     {
-                        if (this.IsPaused)
-                        {
-                            Debug.WriteLine("Waiting for continue.");
-                            await Task.Delay(1000, this.CancellationToken).ConfigureAwait(false);
-
-                            continue;
-                        }
-
                         await ExecuteNextGameStep().ConfigureAwait(false);
                         this.gameStage = this.GameStageSwitcher.SwitchStage(this.gameStage);
                     }
@@ -200,21 +256,10 @@ namespace ColumnsGame.Engine
             }
         }
 
-        public void RequestColumnMove(PlayerRequestEnum playerRequest)
-        {
-            if (!this.IsRunning)
-            {
-                return;
-            }
-
-            ContainerProvider.Resolve<IColumnDriver>().EnqueuePlayerRequest(playerRequest);
-        }
-
         private void InitializeRun()
         {
             this.IsRunning = true;
-            this.gameStage = GameStageEnum.CreateColumn;
-            ContainerProvider.Resolve<IFieldDriver>().Drive(this.GameField);
+            this.CancellationTokenSource = new CancellationTokenSource();
         }
 
         private void FinalizeRun()

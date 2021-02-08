@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel;
 using ColumnsGame.Engine.Constants;
 using ColumnsGame.Engine.EventArgs;
+using ColumnsGame.Engine.Interfaces;
 using ColumnsGame.Game;
 using ColumnsGame.Ioc;
+using ColumnsGame.Navigation;
 using ColumnsGame.Resources;
+using ColumnsGame.Services;
 using Prism.Commands;
 using Prism.Navigation;
 
@@ -22,6 +25,7 @@ namespace ColumnsGame.ViewModels
 
                 RaisePropertyChanged(nameof(this.Game));
                 RaisePropertyChanged(nameof(this.IsPauseContinueButtonEnabled));
+                RaisePropertyChanged(nameof(this.PauseContinueButtonText));
                 RaisePropertyChanged(nameof(this.IsOverlayVisible));
                 RaisePropertyChanged(nameof(this.OverlayText));
 
@@ -106,6 +110,7 @@ namespace ColumnsGame.ViewModels
             if (this.Game.IsRunning)
             {
                 this.Game.Pause();
+                SaveGame();
             }
             else if (this.Game.IsPaused)
             {
@@ -117,20 +122,35 @@ namespace ColumnsGame.ViewModels
         {
             base.OnNavigatedFrom(parameters);
 
-            if (this.Game.IsRunning)
-            {
-                this.Game.Stop();
-            }
+            SaveGame();
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
-            var gameSettings = ContainerProvider.Resolve<IDefaultGameSettingsFactory>().Create();
-            this.Game = ContainerProvider.Resolve<IGameFactory>().Create(gameSettings);
+            ICurrentGameData currentGameData = null;
+            if (parameters.ContainsKey(NavigationParameterNames.GameDataParam))
+            {
+                currentGameData = (ICurrentGameData) parameters[NavigationParameterNames.GameDataParam];
+            }
 
-            this.Game.Start();
+            var gameSettings = ContainerProvider.Resolve<IDefaultGameSettingsFactory>().Create();
+            this.Game = ContainerProvider.Resolve<IGameFactory>().Create(gameSettings, currentGameData);
+
+            this.Game.RequestGameFieldDataNotification();
+
+            if (currentGameData == null)
+            {
+                this.Game.Start();
+            }
+        }
+
+        public override void OnSleep()
+        {
+            base.OnSleep();
+
+            SaveGame();
         }
 
         public override void Destroy()
@@ -139,8 +159,31 @@ namespace ColumnsGame.ViewModels
 
             if (this.Game != null)
             {
+                this.Game.Stop();
+
                 this.Game.GameFieldChanged -= OnGameFieldChanged;
                 this.Game.PropertyChanged -= OnGamePropertyChanged;
+            }
+        }
+
+        private void SaveGame()
+        {
+            if (this.Game.IsRunning)
+            {
+                this.Game.Pause();
+            }
+
+            var saveGameService = ContainerProvider.Resolve<ISaveGameService>();
+
+            if (!this.Game.IsGameOver)
+            {
+                var gameData = saveGameService.CreateEmptyGameData();
+                this.Game.FillCurrentGameData(gameData);
+                saveGameService.SaveGameData(gameData);
+            }
+            else
+            {
+                saveGameService.DeleteGameData();
             }
         }
 

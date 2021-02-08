@@ -1,4 +1,4 @@
-﻿namespace ColumnsGame.Engine.GameProvider
+﻿namespace ColumnsGame.Engine.Providers
 {
     internal interface IGameProvider
     {

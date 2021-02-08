@@ -1,5 +1,8 @@
-﻿using ColumnsGame.Engine.Columns;
+﻿using System.Collections.Generic;
+using ColumnsGame.Engine.Bricks;
+using ColumnsGame.Engine.Columns;
 using ColumnsGame.Engine.Constants;
+using ColumnsGame.Engine.Positions;
 
 namespace ColumnsGame.Engine.Drivers
 {
@@ -10,5 +13,9 @@ namespace ColumnsGame.Engine.Drivers
         void MoveColumnDown();
 
         void EnqueuePlayerRequest(PlayerRequestEnum playerRequest);
+
+        Dictionary<IBrick, BrickPosition> GetColumnState();
+
+        void DriveRestored(Dictionary<BrickPosition, IBrick> restoredColumn);
     }
 }

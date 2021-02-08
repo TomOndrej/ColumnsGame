@@ -17,6 +17,10 @@
             Text="{x:Static resources:Texts.NewGame}"
             Command="{Binding StartGameCommand}"/>
 
+        <Button
+            Text="{x:Static resources:Texts.Continue}"
+            Command="{Binding ContinueGameCommand}"/>
+
     </StackLayout>
 
 </ContentPage>

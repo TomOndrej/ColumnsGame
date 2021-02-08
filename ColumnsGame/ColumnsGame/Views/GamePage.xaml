@@ -12,11 +12,13 @@
     x:DataType="viewModels:GamePageViewModel">
 
     <ContentPage.ToolbarItems>
+
         <ToolbarItem
             Order="Primary"
             Text="{Binding PauseContinueButtonText}"
             IsEnabled="{Binding IsPauseContinueButtonEnabled}"
             Command="{Binding PauseContinueCommand}"/>
+
     </ContentPage.ToolbarItems>
 
     <RelativeLayout>

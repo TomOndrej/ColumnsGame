@@ -4,6 +4,6 @@ namespace ColumnsGame.Game
 {
     public interface IGameFactory
     {
-        Engine.Game Create(IGameSettings gameSettings);
+        Engine.Game Create(IGameSettings gameSettings, ICurrentGameData currentGameData);
     }
 }

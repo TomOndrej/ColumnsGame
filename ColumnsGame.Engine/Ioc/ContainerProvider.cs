@@ -2,8 +2,8 @@
 using ColumnsGame.Engine.Columns;
 using ColumnsGame.Engine.Drivers;
 using ColumnsGame.Engine.Field;
-using ColumnsGame.Engine.GameProvider;
 using ColumnsGame.Engine.GameSteps;
+using ColumnsGame.Engine.Providers;
 using ColumnsGame.Engine.RemovablePatterns;
 using Unity;
 
@@ -30,10 +30,12 @@ namespace ColumnsGame.Engine.Ioc
             newContainer.RegisterType(typeof(IBrickFactory), typeof(BrickFactory));
             newContainer.RegisterType(typeof(IColumnFactory), typeof(ColumnFactory));
             newContainer.RegisterType(typeof(IRemovablePatternsProvider), typeof(RemovablePatternsProvider));
+            newContainer.RegisterType(typeof(ICurrentGameDataProvider), typeof(CurrentGameDataProvider));
 
             newContainer.RegisterSingleton(typeof(IColumnDriver), typeof(ColumnDriver));
             newContainer.RegisterSingleton(typeof(IFieldDriver), typeof(FieldDriver));
-            newContainer.RegisterSingleton(typeof(IGameProvider), typeof(GameProvider.GameProvider));
+            newContainer.RegisterSingleton(typeof(IGameProvider), typeof(GameProvider));
+            newContainer.RegisterSingleton(typeof(ISettingsProvider), typeof(SettingsProvider));
 
             return newContainer;
         }

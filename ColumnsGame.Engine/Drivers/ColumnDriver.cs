@@ -28,7 +28,7 @@ namespace ColumnsGame.Engine.Drivers
         {
             base.Drive(entityToDrive);
 
-            this.IsColumnRotatable = this.DrivenEntity.First().BrickKind != this.DrivenEntity.Last().BrickKind;
+            SetIsColumnRotatable();
 
             this.bricksPositions.Clear();
 
@@ -48,6 +48,27 @@ namespace ColumnsGame.Engine.Drivers
             StartListenForPlayerRequests();
         }
 
+        public void DriveRestored(Dictionary<BrickPosition, IBrick> restoredColumn)
+        {
+            var column = new Column();
+            column.AddRange(restoredColumn.Values);
+
+            base.Drive(column);
+
+            SetIsColumnRotatable();
+
+            this.bricksPositions.Clear();
+
+            foreach (var pair in restoredColumn)
+            {
+                this.bricksPositions.Add(pair.Value, pair.Key);
+            }
+
+            this.IsColumnInFinalPosition = false;
+
+            StartListenForPlayerRequests();
+        }
+
         public void EnqueuePlayerRequest(PlayerRequestEnum playerRequest)
         {
             if (this.IsColumnInFinalPosition)
@@ -56,6 +77,16 @@ namespace ColumnsGame.Engine.Drivers
             }
 
             this.PlayerRequests.Enqueue(playerRequest);
+        }
+
+        public Dictionary<IBrick, BrickPosition> GetColumnState()
+        {
+            if (this.IsColumnInFinalPosition)
+            {
+                return null;
+            }
+
+            return this.bricksPositions;
         }
 
         public void MoveColumnDown()
@@ -191,6 +222,11 @@ namespace ColumnsGame.Engine.Drivers
         private int GetYCoordinateOfNewlyDrivenColumn(int brickIndex)
         {
             return -(this.DrivenEntity.Count - brickIndex);
+        }
+
+        private void SetIsColumnRotatable()
+        {
+            this.IsColumnRotatable = this.DrivenEntity.First().BrickKind != this.DrivenEntity.Last().BrickKind;
         }
     }
 }

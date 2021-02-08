@@ -15,5 +15,9 @@ namespace ColumnsGame.Engine.Drivers
         Task RemoveBrickPatterns();
 
         void StopGameIfGameIsOver();
+
+        GameField GetFieldState();
+
+        void CreateAndNotifyNewGameFieldData();
     }
 }
