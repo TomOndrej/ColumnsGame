@@ -9,6 +9,7 @@ using ColumnsGame.Engine.Constants;
 using ColumnsGame.Engine.Ioc;
 using ColumnsGame.Engine.Positions;
 using ColumnsGame.Engine.Providers;
+using ColumnsGame.Engine.Services;
 
 namespace ColumnsGame.Engine.Drivers
 {
@@ -21,15 +22,11 @@ namespace ColumnsGame.Engine.Drivers
         private ConcurrentQueue<PlayerRequestEnum> PlayerRequests =>
             this.playerRequests ??= new ConcurrentQueue<PlayerRequestEnum>();
 
-        private bool IsColumnRotatable { get; set; }
-
         public bool IsColumnInFinalPosition { get; private set; }
 
         public override void Drive(Column entityToDrive)
         {
             base.Drive(entityToDrive);
-
-            SetIsColumnRotatable();
 
             this.bricksPositions.Clear();
 
@@ -55,8 +52,6 @@ namespace ColumnsGame.Engine.Drivers
             column.AddRange(restoredColumn.Values);
 
             base.Drive(column);
-
-            SetIsColumnRotatable();
 
             this.bricksPositions.Clear();
 
@@ -146,24 +141,12 @@ namespace ColumnsGame.Engine.Drivers
 
         private void RotateColumn()
         {
-            if (!this.IsColumnRotatable)
-            {
-                return;
-            }
-
             if (this.IsColumnInFinalPosition)
             {
                 return;
             }
 
-            var firstBrick = this.DrivenEntity.First();
-            var lastBrick = this.DrivenEntity.Last();
-
-            var kindOfFirstBrick = firstBrick.BrickKind;
-            var kindOfLastBrick = lastBrick.BrickKind;
-
-            firstBrick.BrickKind = kindOfLastBrick;
-            lastBrick.BrickKind = kindOfFirstBrick;
+            ContainerProvider.Resolve<IColumnCycleService>().CycleBricksInColumn(this.DrivenEntity);
 
             ContainerProvider.Resolve<IFieldDriver>().ChangeKindOfBricks();
         }
@@ -225,11 +208,6 @@ namespace ColumnsGame.Engine.Drivers
         private int GetYCoordinateOfNewlyDrivenColumn(int brickIndex)
         {
             return -(this.DrivenEntity.Count - brickIndex);
-        }
-
-        private void SetIsColumnRotatable()
-        {
-            this.IsColumnRotatable = this.DrivenEntity.First().BrickKind != this.DrivenEntity.Last().BrickKind;
         }
     }
 }

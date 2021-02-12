@@ -34,6 +34,7 @@ namespace ColumnsGame.Engine.Ioc
             newContainer.RegisterType(typeof(ICurrentGameDataProvider), typeof(CurrentGameDataProvider));
             newContainer.RegisterType(typeof(INotificationService), typeof(NotificationService));
             newContainer.RegisterType(typeof(IGravitationService), typeof(GravitationService));
+            newContainer.RegisterType(typeof(IColumnCycleService), typeof(ColumnCycleService));
 
             newContainer.RegisterSingleton(typeof(IColumnDriver), typeof(ColumnDriver));
             newContainer.RegisterSingleton(typeof(IFieldDriver), typeof(FieldDriver));
